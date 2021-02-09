@@ -15,20 +15,19 @@ with open('intents.json') as file:
 training_sentences = []
 training_labels = []
 labels = []
-responses = []
 
 
 for intent in data['intents']:
     for pattern in intent['patterns']:
         training_sentences.append(pattern)
         training_labels.append(intent['tag'])
-    responses.append(intent['responses'])
     
     if intent['tag'] not in labels:
         labels.append(intent['tag'])
         
 num_classes = len(labels)
 
+#encoding labels in numbers between 0 and num_classes - 1
 lbl_encoder = LabelEncoder()
 lbl_encoder.fit(training_labels)
 training_labels = lbl_encoder.transform(training_labels)
@@ -38,12 +37,14 @@ embedding_dim = 16
 max_len = 20
 oov_token = "<OOV>"
 
+#text analysis
 tokenizer = Tokenizer(num_words=vocab_size, oov_token=oov_token)
 tokenizer.fit_on_texts(training_sentences)
 word_index = tokenizer.word_index
 sequences = tokenizer.texts_to_sequences(training_sentences)
 padded_sequences = pad_sequences(sequences, truncating='post', maxlen=max_len)
 
+#creating the model
 model = Sequential()
 model.add(Embedding(vocab_size, embedding_dim, input_length=max_len))
 model.add(GlobalAveragePooling1D())
@@ -56,7 +57,7 @@ model.compile(loss='sparse_categorical_crossentropy',
 
 model.summary()
 
-
+#training
 epochs = 500
 history = model.fit(padded_sequences, np.array(training_labels), epochs=epochs)
 model.save("chat_model")
