@@ -33,13 +33,16 @@
 	"patterns": ["Can I find McDonald in your mall", "Can I find Mediaworld in the mall", "Can I find a supermarket in your mall", "Is there GameStop in the mall?", "Can I find BurgerKing in your mall", "Can I find a beauty shop in the mall"]
 	},
 	{"tag": "flightbooking",
-	"patterns": ["I would like to book a flight from London to Rome for tomorrow", "I want to book a flight from Milan to Helsinki for Sunday", "Can you please book me a flight from Prague to Berlin for March 24", "I would like to book a flight from Dublin to Madrid", "I want to book a flight"]
+	"patterns": ["I would like to book a flight from London to Rome for tomorrow", "I want to buy a ticket for a flight from Milan to Helsinki for Sunday", "Can you please book me a flight from Prague to Berlin for March 24", "I would like to book a flight from Dublin to Madrid", "I want to book a flight"]
 	},
 	{"tag": "yes",
 	"patterns": ["yes", "yes thanks", "Yes", "yes of course"]
 	},
 	{"tag": "no",
 	"patterns": ["no", "no thanks", "No", "No not now"]
+	},
+	{"tag": "flightinfo",
+	"patterns": ["I was wondering if is there any flight for tomorrow from Oslo tu Barcellona", "Is there any flight from London to Rome for saturday 23", "Does it exists a flight from Budapest to Moscow for wednesday?"]
 	}
 ]
 }

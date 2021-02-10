@@ -3,6 +3,19 @@ import spacy
 class Parser():
     def __init__(self):
         self.nlp = spacy.load("en_core_web_sm")
+    
+    def entities(self, sentence):
+        dict = {}
+        sentence = self.nlp(sentence)
+        for ent in sentence.ents:
+            dict[ent.label_] = ent.text
+        return dict   
+    def words(self, sentence):
+        words = []
+        sentence = self.nlp(sentence)
+        for token in sentence:
+            words.append(str(token))
+        return words
         
     def parse(self, sentence):
         dict = {}

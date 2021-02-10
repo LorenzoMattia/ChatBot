@@ -35,10 +35,11 @@ def chat():
         method = None 
         try:
             method = getattr(assistent, tag[0])
+            print(method)
         except AttributeError:
             understood = False
             assistent.notunderstood()
-        if understood:    
+        if understood:
             method(inp)    
 
 print("Start messaging with the bot (type quit to stop)!")

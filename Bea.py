@@ -9,6 +9,9 @@ import numpy as np
 
 #["Please provide us your complaint in order to assist you", "Please mention your complaint, we will reach you and sorry for any inconvenience caused"]
 
+
+#sistemare la conferma della prenotazione volo
+
 class Bea():
 
     def __init__(self, recognizer, microphone, limit):
@@ -116,8 +119,7 @@ class Bea():
             self.speak("No, I'm really sorry about this. But you can find some other very interesting shops like: "+  self.shop_type_list[rnd1] + ', ' + self.shop_type_list[rnd2])
     
     def help(self, sentence):
-        result = self.parser.parse(sentence)
-        print (result)
+        self.speak("How can I help you?")
         
     def goodbye(self, sentence):
         answers = ["See you later", "Have a nice day", "Bye!", "Bye! Come back again"]
@@ -138,25 +140,30 @@ class Bea():
             except:
                 return city
         return city
-                        
-        
-    def flightbooking(self, sentence):
+    
+
+    def flight(self, sentence):
         dependencies, children= self.parser.parse(sentence)
-        #print (children)
-        
         departure = self.findcities(children, 'from')
         destination = self.findcities(children, 'to')
-        if departure is None:
+        while departure is None:
             self.speak("from where do you want to leave?")
             guess = self.hear()
-            dependencies, children= self.parser.parse(guess["transcription"])
-            departure = self.findcities(children,'from')
+            entities = self.parser.entities(guess["transcription"])
+            print(entities)
+            try:
+                departure = entities["GPE"]
+            except:
+                departure = None
             
-        if destination is None:
+        while destination is None:
             self.speak("where do you want to go?")
             guess = self.hear()
-            dependencies, children= self.parser.parse(guess["transcription"])
-            destination = self.findcities(children, 'to')
+            entities = self.parser.entities(guess["transcription"])
+            try:
+                destination = entities["GPE"]
+            except:
+                destination = None
             
         if 'for' in children:
             when = children['for'][0]
@@ -164,9 +171,44 @@ class Bea():
             self.speak("when do you want to leave?")
             guess = self.hear()
             when = guess["transcription"]
-
-        self.speak("I'm booking a flight for you from " + str(departure) + " to " + str(destination) + " for " + str(when) + ". Do you want to confirm it?")
+            
+        return departure, destination, when
         
+    def flightconf(self, departure, destination, when):
+        guess = self.hear()
+        conf = guess["transcription"]
+        conf = conf.lower()
+        print(conf)
+        words = self.parser.words(conf)
+        print(words)
+        if "no" in words:
+            self.speak("okay, I'm here for you when you want")
+        elif "yes" in words:
+            self.speak("okay, I'm booking a flight for you from " + str(departure) + " to " + str(destination) + " for " + str(when))
+        else:
+            self.speak("I did not get it, sorry, can you please repeat?")
+            self.flightconf(departure, destination, when)
+        
+        
+    def flightbooking(self, sentence):
+        departure, destination, when = self.flight(sentence)
+        self.speak("I'm booking a flight for you from " + str(departure) + " to " + str(destination) + " for " + str(when) + ". Do you want to confirm it?")
+        self.flightconf(departure, destination, when)
+    
+    def flightinfo(self, sentence):
+        randomprice = random.randint(20,400)
+        randomtime = random. randint(8, 22)
+        randomexistence = random.randint(0,1)
+        
+        if randomexistence == 0:
+            self.speak("No, I'm really sorry about this, try asking me for another day!")
+        else:
+            departure, destination, when = self.flight(sentence)
+            self.speak("Yes, there is a flight from " + str(departure) + " to " + str(destination) + " for " + str(when) + ". It's cost is " + str(randomprice) + "euros " +\
+            "and it leaves at " + str(randomtime) + "o'clock. Do you want me to book it for you?")
+            self.flightconf(departure, destination, when)
+
+    
     def yes(self, sentence):
         self.speak("Okay! Done")
         
