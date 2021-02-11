@@ -1,6 +1,7 @@
 import random
 import time
 import os 
+import string
 from gtts import gTTS 
 import speech_recognition as sr
 import spacy
@@ -17,6 +18,7 @@ class Bea():
     def __init__(self, recognizer, microphone, limit):
         self.shop_list = ['mediaworld', 'nike', 'adidas', 'mcdonald']
         self.shop_type_list = ['electronics stores', 'restaurants', 'clothes shops', 'cafe', 'hairdresser', 'supermarket']
+        self.cities = ["Rome", "London", "Berlin", "Amsterdam", "Dublin", "Madrid", "Milan", "Dublin", "Helsinki", "Oslo", "New York", "Los Angeles"]
         self.recognizer = recognizer
         self.microphone = microphone
         self.limit = limit
@@ -104,18 +106,17 @@ class Bea():
         self.speak('For example you can find these types of shops: ' +  self.shop_type_list[rnd1] + ', ' + self.shop_type_list[rnd2])
         
     def shoppresence(self, sentence):
+        entities = self.parser.entities(sentence)
+        print (entities)
         result = self.parser.parse(sentence)
-        complobj = result['dobj']
-        print(complobj)
+        complobj = result[dobj]
         if (complobj in self.shop_list) or (complobj in self.shop_type_list):
-            print("Yes, you can find " + complobj + ' in our mall!')
             self.speak("Yes, you can find " + complobj + ' in our mall!')
         else:
             rnd1 = random.randint(0,len(self.shop_type_list)-1)
             rnd2 = random.randint(0,len(self.shop_type_list)-1)
             while rnd1 == rnd2:
                 rnd2 = random.randint(0,len(self.shop_type_list)-1)
-            print("No, I'm really sorry about this. But you can find some other very interesting shops like: "+  self.shop_type_list[rnd1] + ', ' + self.shop_type_list[rnd2])
             self.speak("No, I'm really sorry about this. But you can find some other very interesting shops like: "+  self.shop_type_list[rnd1] + ', ' + self.shop_type_list[rnd2])
     
     def help(self, sentence):
@@ -123,14 +124,13 @@ class Bea():
         
     def goodbye(self, sentence):
         answers = ["See you later", "Have a nice day", "Bye!", "Bye! Come back again"]
-        choice = random.randint(0,3)
+        choice = random.randint(0,len(answers))
         self.speak(answers[choice])
         
     def thanks(self, sentence):
         answers = ["Happy to help!", "Any time!", "My pleasure", "You're most welcome!"]
-        choice = random.randint(0,3)
+        choice = random.randint(0,len(answers))
         self.speak(answers[choice])
-        
         
     def findcities(self, children, prep):
         city = None
@@ -141,7 +141,6 @@ class Bea():
                 return city
         return city
     
-
     def flight(self, sentence):
         dependencies, children= self.parser.parse(sentence)
         departure = self.findcities(children, 'from')
@@ -150,7 +149,6 @@ class Bea():
             self.speak("from where do you want to leave?")
             guess = self.hear()
             entities = self.parser.entities(guess["transcription"])
-            print(entities)
             try:
                 departure = entities["GPE"]
             except:
@@ -188,27 +186,78 @@ class Bea():
         else:
             self.speak("I did not get it, sorry, can you please repeat?")
             self.flightconf(departure, destination, when)
-        
-        
-    def flightbooking(self, sentence):
-        departure, destination, when = self.flight(sentence)
-        self.speak("I'm booking a flight for you from " + str(departure) + " to " + str(destination) + " for " + str(when) + ". Do you want to confirm it?")
-        self.flightconf(departure, destination, when)
     
+    def buildgatecode(self):
+        letter = random.choice(string.ascii_letters)
+        number = random.randint(10, 99)
+        return letter + str(number)
+        
+    def flightgate(self, sentence):
+        self.speak("To avoid any mistake looking for the gate of your flight, please tell me only the code of your flight with clear voice")
+        guess = self.hear()
+        guess = guess["transcription"]
+        code = guess.lower()
+        gatecode = self.buildgatecode()
+        self.speak("The gate of yout flight " + code.replace(" ", "") + "is " + gatecode)
+        
+    def flightcheckin(self,sentence):
+        self.speak("To avoid any mistake looking for the terminal of your flight, please tell me only the code of your flight with clear voice")
+        guess = self.hear()
+        guess = guess["transcription"]
+        code = guess.lower()
+        terminalnum = random.randint(1, 10)
+        self.speak("The terminal for your flight " + code.replace(" ", "") + " is the number " + str(terminalnum) +". There you can check in for the flight. Enjoy it.")
+        
     def flightinfo(self, sentence):
+        self.speak("To avoid any mistake looking for the status of your flight, please tell me only the code of your flight with clear voice")
+        guess = self.hear()
+        guess = guess["transcription"]
+        code = guess.lower()
+        
+        rnd1 = random.randint(0,len(self.shop_type_list)-1)
+        rnd2 = random.randint(0,len(self.shop_type_list)-1)
+        while rnd1 == rnd2:
+            rnd2 = random.randint(0,len(self.shop_type_list)-1)
+        departure = self.cities[rnd1]
+        destination = self.cities[rnd2]
+        
+        delays = ["15 minutes", "30 minutes", "1 hour", "2 hours", "4 hours"]
+        status = ["in time", "cancelled", "delayed"]
+        rnd = random.randint(0,len(status)-1)
+        rndstatus = status[rnd]
+        
+        randomtime = random. randint(8, 22)
+        
+        s = "Your flight with code " + code.replace(" ", "") + "from " + departure + " to " + destination +"is " + rndstatus
+        
+        if rndstatus == "delayed":
+            rnd = random.randint(0,len(delays)-1)
+            rnddelay = delays[rnd]
+            statussentence = " of " + rnddelay + " .I'm sorry"
+        elif rndstatus == "in time":
+            statussentence = " .So it will leave at " + str(randomtime) + "o'clock."
+        else:
+            statussentence = " I'm really sorry about this."
+            
+        self.speak(s+statussentence)
+    
+    def flightbooking(self, sentence):
         randomprice = random.randint(20,400)
         randomtime = random. randint(8, 22)
         randomexistence = random.randint(0,1)
         
+        departure, destination, when = self.flight(sentence)
         if randomexistence == 0:
             self.speak("No, I'm really sorry about this, try asking me for another day!")
         else:
-            departure, destination, when = self.flight(sentence)
             self.speak("Yes, there is a flight from " + str(departure) + " to " + str(destination) + " for " + str(when) + ". It's cost is " + str(randomprice) + "euros " +\
             "and it leaves at " + str(randomtime) + "o'clock. Do you want me to book it for you?")
             self.flightconf(departure, destination, when)
 
-    
+    def disablepeople(self, sentence):
+        self.speak("Dear customer, we offer any kind of assistance for people with disabilities. \
+        The airport offers assistance for any displacement in the airport, help for flights information and for luggage displacement")
+        
     def yes(self, sentence):
         self.speak("Okay! Done")
         

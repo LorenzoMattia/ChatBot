@@ -17,9 +17,6 @@
     {"tag": "help",
     "patterns": ["Could you help me?", "give me a hand please", "Can you help?", "What can you do for me?", "I need a support", "I need a help", "support me please"]
     },
-    {"tag": "createaccount",
-    "patterns": ["I need to create a new account", "how to open a new account", "I want to create an account", "can you create an account for me", "how to open a new account"]
-    },
     {"tag": "complaint",
     "patterns": ["have a complaint", "I want to raise a complaint", "there is a complaint about a service"]
     },
@@ -30,7 +27,7 @@
 	"patterns": ["which kind of shops are there in the mall", "which types of shops can I find in the mall", "what kind of shops are there in the mall"]
 	},
 	{"tag": "shoppresence",
-	"patterns": ["Can I find McDonald in your mall", "Can I find Mediaworld in the mall", "Can I find a supermarket in your mall", "Is there GameStop in the mall?", "Can I find BurgerKing in your mall", "Can I find a beauty shop in the mall"]
+	"patterns": ["Can I find McDonald in the airport", "Is there Mediaworld in the airport", "Can I find a supermarket in the airport", "Is there GameStop here?", "Can I find BurgerKing in the airport", "Can I find a beauty shop in the airport"]
 	},
 	{"tag": "flightbooking",
 	"patterns": ["I would like to book a flight from London to Rome for tomorrow", "I want to buy a ticket for a flight from Milan to Helsinki for Sunday", "Can you please book me a flight from Prague to Berlin for March 24", "I would like to book a flight from Dublin to Madrid", "I want to book a flight"]
@@ -42,7 +39,16 @@
 	"patterns": ["no", "no thanks", "No", "No not now"]
 	},
 	{"tag": "flightinfo",
-	"patterns": ["I was wondering if is there any flight for tomorrow from Oslo tu Barcellona", "Is there any flight from London to Rome for saturday 23", "Does it exists a flight from Budapest to Moscow for wednesday?"]
+	"patterns": ["I would like to know what is the status of my flight", "what is the status of my flight BA2490", "Can you give me some information about my flight TO3145"]
+	},
+	{"tag": "flightgate",
+	"patterns": ["I would like to know which is the gate of my flight RY3168", "Do you know what is the gate of my flight", "Can I ask you what is the gate of my flight", "Gate of flight AI2874?"]
+	},
+	{"tag": "flightcheckin",
+	"patterns": ["Do you know what is the terminal of my flight RY3168", "What is the terminal of my flight", "Where can I check in for my flight TO3145"]
+	},
+	{"tag" : "disablepeople",
+	"patterns": ["what kind of services are available for disable people", "Do you offer any kind of assistance for disable people", "which kind of assistance do you offer for people with disabilities"]
 	}
 ]
 }

@@ -9,7 +9,8 @@ class Parser():
         sentence = self.nlp(sentence)
         for ent in sentence.ents:
             dict[ent.label_] = ent.text
-        return dict   
+        return dict
+        
     def words(self, sentence):
         words = []
         sentence = self.nlp(sentence)
