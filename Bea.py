@@ -31,12 +31,11 @@ class Bea():
 
         if not isinstance(microphone, sr.Microphone):
             raise TypeError("`microphone` must be `Microphone` instance")
-
         # adjust the recognizer sensitivity to ambient noise and record audio
         # from the microphone
         with microphone as source:
             recognizer.adjust_for_ambient_noise(source)
-            audio = recognizer.listen(source)
+            audio = recognizer.listen(source, timeout = 7.0)
 
         # set up the response object
         response = {
@@ -68,11 +67,11 @@ class Bea():
                 break
             if not guess["success"]:
                 break
-            print("I didn't catch that. What did you say?\n")
+            #print("I didn't catch that. What did you say?\n")
 
             # if there was an error, stop the game
             if guess["error"]:
-                print("ERROR: {}".format(guess["error"]))
+                #print("ERROR: {}".format(guess["error"]))
                 break
 
         # show the user the transcription
@@ -104,7 +103,7 @@ class Bea():
             rnd2 = random.randint(0,len(self.shop_type_list)-1)
         print('For example you can find these types of shops: ' +  self.shop_type_list[rnd1] + ', ' + self.shop_type_list[rnd2])
         self.speak('For example you can find these types of shops: ' +  self.shop_type_list[rnd1] + ', ' + self.shop_type_list[rnd2])
-        
+    '''    
     def shoppresence(self, sentence):
         entities = self.parser.entities(sentence)
         print (entities)
@@ -118,7 +117,7 @@ class Bea():
             while rnd1 == rnd2:
                 rnd2 = random.randint(0,len(self.shop_type_list)-1)
             self.speak("No, I'm really sorry about this. But you can find some other very interesting shops like: "+  self.shop_type_list[rnd1] + ', ' + self.shop_type_list[rnd2])
-    
+    '''
     def help(self, sentence):
         self.speak("How can I help you?")
         

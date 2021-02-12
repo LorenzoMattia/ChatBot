@@ -28,19 +28,22 @@ def chat():
 
         guess = assistent.hear()
         inp = guess["transcription"]
-        result = model.predict(keras.preprocessing.sequence.pad_sequences(tokenizer.texts_to_sequences([inp]),
-                                             truncating='post', maxlen=max_len))
-        tag = lbl_encoder.inverse_transform([np.argmax(result)])
-
-        method = None 
         try:
-            method = getattr(assistent, tag[0])
-            print(method)
-        except AttributeError:
-            understood = False
-            assistent.notunderstood()
-        if understood:
-            method(inp)    
+            result = model.predict(keras.preprocessing.sequence.pad_sequences(tokenizer.texts_to_sequences([inp]),
+                                                 truncating='post', maxlen=max_len))
+            tag = lbl_encoder.inverse_transform([np.argmax(result)])
+
+            method = None 
+            try:
+                method = getattr(assistent, tag[0])
+                print(method)
+            except AttributeError:
+                understood = False
+                assistent.notunderstood()
+            if understood:
+                method(inp)
+        except:
+            assistent.speak("I didn't catch that. What did you say?")
 
 print("Start messaging with the bot (type quit to stop)!")
 
