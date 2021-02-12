@@ -27,7 +27,7 @@
 	"patterns": ["which kind of shops are there in the mall", "which types of shops can I find in the mall", "what kind of shops are there in the mall"]
 	},
 	{"tag": "shoppresence",
-	"patterns": ["Can I find McDonald in the airport", "Is there Mediaworld in the airport", "Can I find a supermarket in the airport", "Is there GameStop here?", "Can I find BurgerKing in the airport", "Can I find a beauty shop in the airport"]
+	"patterns": ["Can I find McDonald in the airport", "Is there Mediaworld in the airport", "Can I find a supermarket in the airport", "Is there GameStop here?", "Can I find BurgerKing in the airport", "Can I find a beauty shop in the airport", "Are there any restaurants?"]
 	},
 	{"tag": "flightbooking",
 	"patterns": ["I would like to book a flight from London to Rome for tomorrow", "I want to buy a ticket for a flight from Milan to Helsinki for Sunday", "Can you please book me a flight from Prague to Berlin for March 24", "I would like to book a flight from Dublin to Madrid", "I want to book a flight"]
@@ -49,6 +49,9 @@
 	},
 	{"tag" : "disablepeople",
 	"patterns": ["what kind of services are available for disable people", "Do you offer any kind of assistance for disable people", "which kind of assistance do you offer for people with disabilities"]
+	},
+	{"tag": "wheretobuy",
+	"patterns": ["Is there any shop in which I can buy a souvenir", "where can I buy some clothes", "where can I buy a pizza","where can I buy a guitar", "where can I buy a couple of magnets",  "where can I find a magnet for my daugther", "are there any shops which sell perfumes?"]
 	}
 ]
 }

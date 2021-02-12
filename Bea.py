@@ -19,6 +19,10 @@ class Bea():
         self.shop_list = ['mediaworld', 'nike', 'adidas', 'mcdonald']
         self.shop_type_list = ['electronics stores', 'restaurants', 'clothes shops', 'cafe', 'hairdresser', 'supermarket']
         self.cities = ["Rome", "London", "Berlin", "Amsterdam", "Dublin", "Madrid", "Milan", "Dublin", "Helsinki", "Oslo", "New York", "Los Angeles"]
+        self.items = ["souvenir", "toy", "clothes", "magnet", "perfume"]
+        self.shops = [["London souvenirs", "Souvenirs from England", "U.K. souvenirs"], ["Game Stop", "Toys U.K"], \
+                    ["Burberry", "Gucci", "Fendi"], ["London souvenirs", "Magnets Love", "U.K. souvenirs"], ["duty free"]]
+        self.items2shops = dict(zip(self.items, self.shops))
         self.recognizer = recognizer
         self.microphone = microphone
         self.limit = limit
@@ -35,7 +39,7 @@ class Bea():
         # from the microphone
         with microphone as source:
             recognizer.adjust_for_ambient_noise(source)
-            audio = recognizer.listen(source, timeout = 7.0)
+            audio = recognizer.listen(source)
 
         # set up the response object
         response = {
@@ -87,6 +91,7 @@ class Bea():
     def greeting(self, sentence):
         print("Hi, how can I help you?")
         self.speak("Hi, how can I help you?")
+        return True
     
     def shops(self, sentence):
         rnd1 = random.randint(0,len(self.shop_list)-1)
@@ -95,6 +100,7 @@ class Bea():
             rnd2 = random.randint(0,len(self.shop_list)-1)
         print('Some of the shops you can find here are the followings: ' +  self.shop_list[rnd1] + ', ' + self.shop_list[rnd2])
         self.speak('Some of the shops you can find here are the followings: ' +  self.shop_list[rnd1] + ', ' + self.shop_list[rnd2])
+        return True
         
     def shoptypes(self, sentence):
         rnd1 = random.randint(0,len(self.shop_type_list)-1)
@@ -103,7 +109,8 @@ class Bea():
             rnd2 = random.randint(0,len(self.shop_type_list)-1)
         print('For example you can find these types of shops: ' +  self.shop_type_list[rnd1] + ', ' + self.shop_type_list[rnd2])
         self.speak('For example you can find these types of shops: ' +  self.shop_type_list[rnd1] + ', ' + self.shop_type_list[rnd2])
-       
+        return True
+        
     def shoppresence(self, sentence):
         complobj = None
         chunks = self.parser.noun_chunks(sentence)
@@ -132,19 +139,23 @@ class Bea():
             while rnd1 == rnd2:
                 rnd2 = random.randint(0,len(self.shop_type_list)-1)
             self.speak("No, I'm really sorry about this. But you can find some other very interesting shops like: "+  self.shop_type_list[rnd1] + ', ' + self.shop_type_list[rnd2])
-            
+        return True  
+        
     def help(self, sentence):
         self.speak("How can I help you?")
+        return True
         
     def goodbye(self, sentence):
         answers = ["See you later", "Have a nice day", "Bye!", "Bye! Come back again"]
         choice = random.randint(0,len(answers))
         self.speak(answers[choice])
+        return False
         
     def thanks(self, sentence):
         answers = ["Happy to help!", "Any time!", "My pleasure", "You're most welcome!"]
         choice = random.randint(0,len(answers))
         self.speak(answers[choice])
+        return False
         
     def findcities(self, children, prep):
         city = None
@@ -213,6 +224,7 @@ class Bea():
         code = guess.lower()
         gatecode = self.buildgatecode()
         self.speak("The gate of yout flight " + code.replace(" ", "") + "is " + gatecode)
+        return True
         
     def flightcheckin(self,sentence):
         self.speak("To avoid any mistake looking for the terminal of your flight, please tell me only the code of your flight with clear voice")
@@ -221,6 +233,7 @@ class Bea():
         code = guess.lower()
         terminalnum = random.randint(1, 10)
         self.speak("The terminal for your flight " + code.replace(" ", "") + " is the number " + str(terminalnum) +". There you can check in for the flight. Enjoy it.")
+        return True
         
     def flightinfo(self, sentence):
         self.speak("To avoid any mistake looking for the status of your flight, please tell me only the code of your flight with clear voice")
@@ -254,7 +267,8 @@ class Bea():
             statussentence = " I'm really sorry about this."
             
         self.speak(s+statussentence)
-    
+        return True
+        
     def flightbooking(self, sentence):
         randomprice = random.randint(20,400)
         randomtime = random. randint(8, 22)
@@ -267,10 +281,42 @@ class Bea():
             self.speak("Yes, there is a flight from " + str(departure) + " to " + str(destination) + " for " + str(when) + ". It's cost is " + str(randomprice) + "euros " +\
             "and it leaves at " + str(randomtime) + "o'clock. Do you want me to book it for you?")
             self.flightconf(departure, destination, when)
-
+        return True
+        
     def disablepeople(self, sentence):
         self.speak("Dear customer, we offer any kind of assistance for people with disabilities. \
         The airport offers assistance for any displacement in the airport, help for flights information and for luggage displacement")
+        return True
+        
+    def wheretobuy(self, sentence):
+        complobj = None
+        chunks = self.parser.noun_chunks(sentence)
+        print (chunks)
+        complobj = chunks['dobj'] if 'dobj' in chunks.keys() else None
+        while complobj is None:
+            self.speak("I've not understood. Please repeat.")
+            guess = self.hear()
+            sentence = guess["transcription"]
+            chunks = self.parser.noun_chunks(sentence)
+            complobj = chunks['dobj'] if 'dobj' in chunks.keys() else None
+        
+        soldhere = False 
+        
+        for string in self.items:
+            if string in complobj or complobj in string:
+                soldhere = True
+                break
+            
+        if soldhere:
+            str = ""
+            for i in self.items2shops[string]:
+                str = str + i
+                str = str + ", "
+            self.speak("You can buy " + complobj + "in the following shops: "+ str)
+            
+        else:
+            self.speak("I'm really sorry, there are no shops selling what you are looking for")
+        return True
         
     def yes(self, sentence):
         self.speak("Okay! Done")

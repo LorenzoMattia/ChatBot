@@ -22,8 +22,9 @@ def chat():
     # parameters
     max_len = 20
     
-    while True:
-        understood = True
+    continueConversation = True
+    while continueConversation:
+        #understood = True
         print("User: ")
 
         guess = assistent.hear()
@@ -34,14 +35,13 @@ def chat():
             tag = lbl_encoder.inverse_transform([np.argmax(result)])
 
             method = None 
-            try:
-                method = getattr(assistent, tag[0])
-                print(method)
-            except AttributeError:
-                understood = False
-                assistent.notunderstood()
-            if understood:
-                method(inp)
+            method = getattr(assistent, tag[0])
+            #print(method)
+            #except AttributeError:
+                #understood = False
+                #assistent.notunderstood()
+            #if understood:
+            continueConversation = method(inp)
         except:
             assistent.speak("I didn't catch that. What did you say?")
 
