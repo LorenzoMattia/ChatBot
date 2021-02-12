@@ -103,21 +103,36 @@ class Bea():
             rnd2 = random.randint(0,len(self.shop_type_list)-1)
         print('For example you can find these types of shops: ' +  self.shop_type_list[rnd1] + ', ' + self.shop_type_list[rnd2])
         self.speak('For example you can find these types of shops: ' +  self.shop_type_list[rnd1] + ', ' + self.shop_type_list[rnd2])
-    '''    
+       
     def shoppresence(self, sentence):
-        entities = self.parser.entities(sentence)
-        print (entities)
-        result = self.parser.parse(sentence)
-        complobj = result[dobj]
-        if (complobj in self.shop_list) or (complobj in self.shop_type_list):
-            self.speak("Yes, you can find " + complobj + ' in our mall!')
+        complobj = None
+        chunks = self.parser.noun_chunks(sentence)
+        complobj = chunks['dobj'] if 'dobj' in chunks.keys() else chunks['attr']
+        while complobj is None:
+            self.speak("I've not understood. Please repeat.")
+            guess = self.hear()
+            sentence = guess["transcription"]
+            chunks = self.parser.noun_chunks(sentence)
+            complobj = chunks['dobj'] if 'dobj' in chunks.keys() else chunks['attr']
+        
+        complobj = complobj.lower()
+        here = False
+        for string in self.shop_list:
+            if complobj in string or string in complobj:
+                here = True
+        if not here:
+            for string in self.shop_type_list:
+                if complobj in string or string in complobj:
+                    here = True
+        if here:
+            self.speak("Yes, you can find " + complobj + ' in our airport!')
         else:
             rnd1 = random.randint(0,len(self.shop_type_list)-1)
             rnd2 = random.randint(0,len(self.shop_type_list)-1)
             while rnd1 == rnd2:
                 rnd2 = random.randint(0,len(self.shop_type_list)-1)
             self.speak("No, I'm really sorry about this. But you can find some other very interesting shops like: "+  self.shop_type_list[rnd1] + ', ' + self.shop_type_list[rnd2])
-    '''
+            
     def help(self, sentence):
         self.speak("How can I help you?")
         

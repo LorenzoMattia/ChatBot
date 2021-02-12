@@ -1,9 +1,17 @@
 import spacy
 
 class Parser():
+
     def __init__(self):
         self.nlp = spacy.load("en_core_web_sm")
     
+    def noun_chunks(self, sentence):
+        dict = {}
+        sentence = self.nlp(sentence)
+        for chunk in sentence.noun_chunks:
+            dict[chunk.root.dep_] = chunk.text 
+        return dict
+        
     def entities(self, sentence):
         dict = {}
         sentence = self.nlp(sentence)
