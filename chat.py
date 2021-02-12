@@ -24,7 +24,6 @@ def chat():
     
     continueConversation = True
     while continueConversation:
-        #understood = True
         print("User: ")
 
         guess = assistent.hear()
@@ -36,11 +35,6 @@ def chat():
 
             method = None 
             method = getattr(assistent, tag[0])
-            #print(method)
-            #except AttributeError:
-                #understood = False
-                #assistent.notunderstood()
-            #if understood:
             continueConversation = method(inp)
         except:
             assistent.speak("I didn't catch that. What did you say?")
