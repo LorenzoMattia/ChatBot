@@ -15,7 +15,7 @@
     "patterns": ["have a complaint", "I want to raise a complaint", "there is a complaint about a service"]
     },
 	{"tag": "shoppresence",
-	"patterns": ["Can I find a supermarket in the airport", "Is there GameStop here", "Are there any restaurants", "can I find some electronic shops here"]
+	"patterns": ["Can I find a supermarket in the airport", "Is there GameStop here", "Are there any restaurants", "can I find some electronic shops here", "can I find an Armani store in the airport"]
 	},
 	{"tag": "flightbooking",
 	"patterns": ["I would like to book a flight from London to Rome for tomorrow", "I want to buy a ticket for a flight from Milan to Helsinki for Sunday", "Can you please book me a flight from Prague to Berlin for March 24", "I would like to book a flight from Dublin to Madrid", "I want to book a flight"]
@@ -34,6 +34,12 @@
 	},
 	{"tag": "wheretobuy",
 	"patterns": ["Is there any shop in which I can buy a souvenir", "where can I buy some clothes", "where can I buy a pizza","where can I buy a guitar", "where can I buy a couple of magnets",  "where can I find a magnet for my daugther", "are there any shops which sell perfumes?"]
+	},
+	{"tag": "rentacar",
+	"patterns": ["i would like to rent a car", "i want to rent a car", "can i rent a car", "is it possible to rent a car"]
+	},
+	{"tag": "bookhotel",
+	"patterns": ["do you know if there is an hotel next to the airport", "can you suggest me an hotel near the airport", "is there any hotel not too much far from here"]
 	}
 ]
 }

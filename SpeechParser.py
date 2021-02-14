@@ -45,4 +45,6 @@ if __name__ == '__main__':
     sentence = input()
     p = Parser()
     p.parse(sentence)
+    print(p.entities(sentence))
+    
     

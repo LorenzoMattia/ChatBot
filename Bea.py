@@ -21,7 +21,23 @@ import numpy as np
     "patterns": ["what is your name", "what should I call you", "whats your name?"]
     },
     
-
+    def shops(self, sentence):
+        rnd1 = random.randint(0,len(self.shop_list)-1)
+        rnd2 = random.randint(0,len(self.shop_list)-1)
+        while rnd1 == rnd2:
+            rnd2 = random.randint(0,len(self.shop_list)-1)
+        print('Some of the shops you can find here are the followings: ' +  self.shop_list[rnd1] + ', ' + self.shop_list[rnd2])
+        self.speak('Some of the shops you can find here are the followings: ' +  self.shop_list[rnd1] + ', ' + self.shop_list[rnd2])
+        return True
+    
+    def shoptypes(self, sentence):
+        rnd1 = random.randint(0,len(self.shop_types)-1)
+        rnd2 = random.randint(0,len(self.shop_types)-1)
+        while rnd1 == rnd2:
+            rnd2 = random.randint(0,len(self.shop_types)-1)
+        print('For example you can find these types of shops: ' +  self.shop_types[rnd1] + ', ' + shop_types[rnd2])
+        self.speak('For example you can find these types of shops: ' +  shop_types[rnd1] + ', ' + shop_types[rnd2])
+        return True
 '''
 
 #sistemare la conferma della prenotazione volo
@@ -29,12 +45,14 @@ import numpy as np
 class Bea():
 
     def __init__(self, recognizer, microphone, limit):
+        self.shop_types = ["souvenir stores", "supermarket duty free", "luxury shops", "restaurants", "cafes"]
         self.shop_list = ['mediaworld', 'nike', 'adidas', 'mcdonald']
         self.shop_type_list = ['electronic', 'restaurant', 'clothes', 'cafe', 'hairdresser', 'supermarket']
         self.cities = ["Rome", "London", "Berlin", "Amsterdam", "Dublin", "Madrid", "Milan", "Dublin", "Helsinki", "Oslo", "New York", "Los Angeles"]
         self.items = ["souvenir", "toy", "clothes", "magnet", "perfume"]
         self.shops = [["London souvenirs", "Souvenirs from England", "U.K. souvenirs"], ["Game Stop", "Toys U.K"], \
                     ["Burberry", "Gucci", "Fendi"], ["London souvenirs", "Magnets Love", "U.K. souvenirs"], ["duty free"]]
+        self.car_models = ["luxury car"," mini van","utilitarian car"]
         self.items2shops = dict(zip(self.items, self.shops))
         self.recognizer = recognizer
         self.microphone = microphone
@@ -105,25 +123,29 @@ class Bea():
         print("Hi, how can I help you?")
         self.speak("Hi, how can I help you?")
         return True
-    '''
-    def shops(self, sentence):
-        rnd1 = random.randint(0,len(self.shop_list)-1)
-        rnd2 = random.randint(0,len(self.shop_list)-1)
-        while rnd1 == rnd2:
-            rnd2 = random.randint(0,len(self.shop_list)-1)
-        print('Some of the shops you can find here are the followings: ' +  self.shop_list[rnd1] + ', ' + self.shop_list[rnd2])
-        self.speak('Some of the shops you can find here are the followings: ' +  self.shop_list[rnd1] + ', ' + self.shop_list[rnd2])
+    
+    def help(self, sentence):
+        self.speak("How can I help you?")
         return True
         
-    def shoptypes(self, sentence):
-        rnd1 = random.randint(0,len(self.shop_type_list)-1)
-        rnd2 = random.randint(0,len(self.shop_type_list)-1)
-        while rnd1 == rnd2:
-            rnd2 = random.randint(0,len(self.shop_type_list)-1)
-        print('For example you can find these types of shops: ' +  self.shop_type_list[rnd1] + ', ' + self.shop_type_list[rnd2])
-        self.speak('For example you can find these types of shops: ' +  self.shop_type_list[rnd1] + ', ' + self.shop_type_list[rnd2])
-        return True
-    '''    
+    def goodbye(self, sentence):
+        answers = ["See you later", "Have a nice day", "Bye!", "Bye! Come back again"]
+        choice = random.randint(0,len(answers)-1)
+        self.speak(answers[choice])
+        return False
+        
+    def thanks(self, sentence):
+        answers = ["Happy to help!", "Any time!", "My pleasure", "You're most welcome!"]
+        choice = random.randint(0,len(answers)-1)
+        self.speak(answers[choice])
+        return False
+    
+    def complaint(self, sentence):
+        answers = ["Please provide us your complaint in order to assist you", "Please mention your complaint, we will reach you and sorry for any inconvenience caused"]
+        choice = random.randint(0,len(answers)-1)
+        self.speak(answers[choice])
+        return False
+    
     def shoppresence(self, sentence):
         complobj = None
         chunks = self.parser.noun_chunks(sentence)
@@ -154,21 +176,6 @@ class Bea():
             self.speak("No, I'm really sorry about this. But you can find some other very interesting shops like: "+  self.shop_type_list[rnd1] + ', ' + self.shop_type_list[rnd2])
         return True  
         
-    def help(self, sentence):
-        self.speak("How can I help you?")
-        return True
-        
-    def goodbye(self, sentence):
-        answers = ["See you later", "Have a nice day", "Bye!", "Bye! Come back again"]
-        choice = random.randint(0,len(answers)-1)
-        self.speak(answers[choice])
-        return False
-        
-    def thanks(self, sentence):
-        answers = ["Happy to help!", "Any time!", "My pleasure", "You're most welcome!"]
-        choice = random.randint(0,len(answers)-1)
-        self.speak(answers[choice])
-        return False
         
     def findcities(self, children, prep):
         city = None
@@ -197,7 +204,6 @@ class Bea():
             guess = self.hear()
             try:
                 entities = self.parser.entities(guess["transcription"])
-                print(entities)
                 destination = entities["GPE"]
             except:
                 destination = None
@@ -206,9 +212,16 @@ class Bea():
             when = children['for'][0]
         else:    
             self.speak("when do you want to leave?")
-            guess = self.hear()
-            when = guess["transcription"]
-            
+            guess = None
+            while guess is None:
+                guess = self.hear()
+                guess = guess["transcription"]
+                try:
+                    ent = self.parser.entities(guess)
+                    guess = ent["DATE"]
+                except: 
+                    guess = None
+        when = guess
         return departure, destination, when
         
     def flightconf(self, departure, destination, when):
@@ -230,24 +243,47 @@ class Bea():
         letter = random.choice(string.ascii_letters)
         number = random.randint(10, 99)
         return letter + str(number)
+    
+    def checkflightcode(self, code):
+        if len(code) is not 6:
+            return False
+        else:
+            for i in range(len(code)):
+                if i is 1 or i is 0:
+                    if not code[i].isalpha():
+                        return False
+                else:
+                    if not code[i].isdigit:
+                        return False
+        return True
         
     def flightgate(self, sentence):
         self.speak("To avoid any mistake looking for the gate of your flight, please tell me only the code of your flight with clear voice")
         guess = None
-        while guess is None:
+        isValid = False
+        while guess is None or not isValid:
             guess = self.hear()
             guess = guess["transcription"]
+            if self.checkflightcode(guess):
+                isValid = True
+            else:
+                self.speak("That is not a valid code. Try again please.")
         code = guess.lower()
         gatecode = self.buildgatecode()
         self.speak("The gate of yout flight " + code.replace(" ", "") + "is " + gatecode)
         return True
-        
+       
     def flightcheckin(self,sentence):
         self.speak("To avoid any mistake looking for the terminal of your flight, please tell me only the code of your flight with clear voice")
         guess = None
-        while guess is None:
+        isValid = False
+        while guess is None or not isValid:
             guess = self.hear()
             guess = guess["transcription"]
+            if self.checkflightcode(guess):
+                isValid = True
+            else:
+                self.speak("That is not a valid code. Try again please.")
         code = guess.lower()
         terminalnum = random.randint(1, 10)
         self.speak("The terminal for your flight " + code.replace(" ", "") + " is the number " + str(terminalnum) +". There you can check in for the flight. Enjoy it.")
@@ -256,9 +292,14 @@ class Bea():
     def flightinfo(self, sentence):
         self.speak("To avoid any mistake looking for the status of your flight, please tell me only the code of your flight with clear voice")
         guess = None
-        while guess is None:
+        isValid = False
+        while guess is None or not isValid:
             guess = self.hear()
             guess = guess["transcription"]
+            if self.checkflightcode(guess):
+                isValid = True
+            else:
+                self.speak("That is not a valid code. Try again please.")
         code = guess.lower()
         
         rnd1 = random.randint(0,len(self.shop_type_list)-1)
@@ -305,7 +346,26 @@ class Bea():
         
     def disablepeople(self, sentence):
         self.speak("Dear customer, we offer any kind of assistance for people with disabilities. \
-        The airport offers assistance for any displacement in the airport, help for flights information and for luggage displacement")
+        The airport offers assistance for any displacement in the airport, help for flights information and for luggage displacement\
+        . Which kind of assistance do you need?")
+        
+        guess = None
+        while guess is None:
+            guess = self.hear()
+            guess = guess["transcription"]
+        assistance_needed = guess
+        self.speak("When do you need it?")
+        guess = None
+        while guess is None:
+            guess = self.hear()
+            guess = guess["transcription"]
+            try:
+                ent = self.parser.entities(guess)
+                guess = ent["DATE"]
+            except: 
+                guess = None
+        when = guess
+        self.speak("Perfect, one of our dependents will be available for you " + when + "for the assistance service you have chosen: "+ assistance_needed)
         return True
         
     def wheretobuy(self, sentence):
@@ -337,6 +397,57 @@ class Bea():
         else:
             self.speak("I'm really sorry, there are no shops selling what you are looking for")
         return True
+    
+    def rentacar(self,sentence):
+        self.speak("Yes, which kind of car do you need? The followings are the models we have available: luxury car, mini van, utilitarian car.")
+        guess = None
+        while guess is None or guess not in self.car_models:
+            guess = self.hear()
+            guess = guess["transcription"]
+            if guess not in self.car_models:
+                self.speak("this model is not available, sorry, try with another one")
+        car_model = guess
+        isValid = False
+        self.speak("For how many days do you need it?. Please specify the exact number of days")
+        guess = None
+        while guess is None:
+            guess = self.hear()
+            guess = guess["transcription"]
+            try:
+                ent = self.parser.entities(guess)
+                guess = ent["DATE"]
+            except: 
+                guess = None
+        num_days = guess
+        
+        self.speak("Ok, you have rent a " + car_model + " for "+ num_days)
+        
+        return True
+
+    def bookhotel(self, sentence):
+        self.speak("I can suggest you a wonderful hotel near the airport. The Royal hotel. Do you want me to book a room there for you?")
+        guess = None
+        while guess is None:
+            guess = self.hear()
+            guess = guess["transcription"]
+        confirm = guess
+        if "yes" in confirm or "Yes" in confirm:
+            self.speak("For how many days do you need it?. Please specify the exact number of days")
+            guess = None
+            while guess is None:
+                guess = self.hear()
+                guess = guess["transcription"]
+                try:
+                    ent = self.parser.entities(guess)
+                    guess = ent["DATE"]
+                except: 
+                    guess = None
+            num_days = guess
+            
+            self.speak("Ok, I have booked for you a room in the Royal hotel for" + num_days)
+        else:
+            self.speak("Ok, I'm here for you when you want")
+        return True
         
     def yes(self, sentence):
         self.speak("Okay! Done")
@@ -346,32 +457,3 @@ class Bea():
         
     def notunderstood(self):
         self.speak("I have not understood, can you please repeat?")
-        
-if __name__ == "__main__":
-    PROMPT_LIMIT = 5
-    recognizer = sr.Recognizer()
-    microphone = sr.Microphone()
-    
-    guess = hear()
-    
-
-    nlp = spacy.load("en_core_web_sm")
-    doc = nlp(guess["transcription"])
-
-    for chunk in doc.noun_chunks:
-        print(chunk.text, chunk.root.text, chunk.root.dep_,
-                chunk.root.head.text)
-        if chunk.root.dep_ == "dobj":
-            objcompl = chunk.root.text
-        print('\n')
-    
-    print('\n\n')
-        
-    for token in doc:
-        print(token.text, token.dep_, token.head.text, token.head.pos_,
-                [child for child in token.children])
-        if str(token) == "order":
-            verb = "order"
-        print('\n')
-        
-    my_text = "What kind of " + objcompl + "do you want to " + verb
