@@ -31,10 +31,12 @@ def chat():
         try:
             result = model.predict(keras.preprocessing.sequence.pad_sequences(tokenizer.texts_to_sequences([inp]),
                                                  truncating='post', maxlen=max_len))
+            print(np.max(result))
             tag = lbl_encoder.inverse_transform([np.argmax(result)])
 
             method = None 
             method = getattr(assistent, tag[0])
+            print(method)
             continueConversation = method(inp)
         except:
             assistent.speak("I didn't catch that. What did you say?")

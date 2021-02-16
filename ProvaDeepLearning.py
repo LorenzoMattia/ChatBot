@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Embedding, GlobalAveragePooling1D, Dropout
+from tensorflow.keras.layers import Dense, Embedding, GlobalAveragePooling1D, GlobalMaxPooling1D,SpatialDropout1D,LSTM, Dropout
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
@@ -32,8 +32,8 @@ lbl_encoder = LabelEncoder()
 lbl_encoder.fit(training_labels)
 training_labels = lbl_encoder.transform(training_labels)
 
-vocab_size = 1000
-embedding_dim = 16
+vocab_size = 2000
+embedding_dim = 32
 max_len = 20
 oov_token = "<OOV>"
 
@@ -47,15 +47,22 @@ padded_sequences = pad_sequences(sequences, truncating='post', maxlen=max_len)
 #creating the model
 model = Sequential()
 model.add(Embedding(vocab_size, embedding_dim, input_length=max_len))
-model.add(GlobalAveragePooling1D())
+model.add(GlobalMaxPooling1D())
+model.add(Dropout(0.2))
 model.add(Dense(64, activation='relu'))
-model.add(Dense(64, activation='relu'))
+model.add(Dense(32, activation='relu'))
 model.add(Dense(num_classes, activation='softmax'))
 model.compile(loss='sparse_categorical_crossentropy', 
               optimizer='adam', metrics=['accuracy'])
-
+'''
+model = Sequential()
+model.add(Embedding(vocab_size, embedding_dim, input_length=max_len))
+model.add(SpatialDropout1D(0.2))
+model.add(LSTM(100, dropout=0.2, recurrent_dropout=0.2))
+model.add(Dense(num_classes, activation='softmax'))
+model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 model.summary()
-
+'''
 #training
 epochs = 500
 history = model.fit(padded_sequences, np.array(training_labels), epochs=epochs)
