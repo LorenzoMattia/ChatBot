@@ -13,11 +13,20 @@ class Parser():
         return dict
         
     def entities(self, sentence):
-        dict = {}
         sentence = self.nlp(sentence)
+        labels = []
         for ent in sentence.ents:
-            dict[ent.label_] = ent.text
-        return dict
+            labels.append(ent.label_)
+        labels = list(set(labels))
+        values = []
+        for i in range(len(labels)):
+            empty = []
+            values.append(empty)
+        dictionary = dict(zip(labels, values))
+        for ent in sentence.ents:
+            dictionary[ent.label_].append(ent.text)
+        
+        return dictionary
         
     def words(self, sentence):
         words = []

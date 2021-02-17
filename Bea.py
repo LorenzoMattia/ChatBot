@@ -11,6 +11,7 @@ import numpy as np
 #["Please provide us your complaint in order to assist you", "Please mention your complaint, we will reach you and sorry for any inconvenience caused"]
 
 '''
+
 {"tag": "shoptypes",
 	"patterns": ["which kind of shops are there in the airport", "which types of shops can I find in the airport", "what kind of shops are there in the airport"]
 	},
@@ -177,17 +178,6 @@ class Bea():
         return True  
         
         
-    def findcities(self, children, prep):
-        city = None
-        if prep in children:
-            try:
-                city = children[prep][0]
-            except:
-                return city
-        return city
-    
-    
-        
     def flightconf(self, departure, destination, when):
         conf = None
         while conf is None:
@@ -293,11 +283,23 @@ class Bea():
             
         self.speak(s+statussentence)
         return True
-
+    
+    def findcities(self, children, entities, prep):
+        city = None
+        print(entities)
+        if prep in children:
+            try:
+                city = children[prep][0] if children[prep][0] in entities["GPE"] else None
+                print(city)
+            except:
+                return city
+        return city
+    
     def flight(self, sentence):
-        dependencies, children= self.parser.parse(sentence)
-        departure = self.findcities(children, 'from')
-        destination = self.findcities(children, 'to')
+        children= self.parser.parse(sentence)
+        entities = self.parser.entities(sentence)
+        departure = self.findcities(children, entities, 'from')
+        destination = self.findcities(children, entities,'to')
         while departure is None:
             self.speak("from where do you want to leave?")
             guess = self.hear()
@@ -314,8 +316,12 @@ class Bea():
                 destination = entities["GPE"]
             except:
                 destination = None
+        '''
         if 'for' in children:
             when = children['for'][0]
+        '''
+        if 'DATE' in entities.keys():
+            when = entities["DATE"]
         else:    
             self.speak("when do you want to leave?")
             guess = None

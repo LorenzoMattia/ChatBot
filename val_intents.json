@@ -2,9 +2,6 @@
 	{"tag": "greeting",
 	 "patterns": ["hey there"]
 	},
-	{"tag": "shoppresence",
-	"patterns": ["is it possible to find a supermarket", "can I find here a toy store", "is there any Gucci store in the airport"]
-	},
 	{"tag": "flightbooking",
 	"patterns": ["i would really like if it is possible to book a flight", "it is possible to buy a ticket for a flight to Berlin for tomorrow"]
 	},
@@ -20,7 +17,10 @@
 	{"tag": "disablepeople",
 	"patterns": ["is there any kind of assistance for people with disabilites in this airport", "what about disable people"]
 	},
-	{"tag": "wheretobuy",
+	{"tag": "shoppresence",
+	"patterns": ["is it possible to find a supermarket", "can I find here a toy store", "is there any Gucci store in the airport"]
+	},
+    {"tag": "wheretobuy",
 	"patterns": ["it is possible to find here a shop that sells pillows", "do you know if I can buy a radio somewhere in the airport"]
 	},
 	{"tag": "flightinfo",
