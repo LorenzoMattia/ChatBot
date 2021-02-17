@@ -186,43 +186,7 @@ class Bea():
                 return city
         return city
     
-    def flight(self, sentence):
-        dependencies, children= self.parser.parse(sentence)
-        departure = self.findcities(children, 'from')
-        destination = self.findcities(children, 'to')
-        while departure is None:
-            self.speak("from where do you want to leave?")
-            guess = self.hear()
-            try:
-                entities = self.parser.entities(guess["transcription"])
-                departure = entities["GPE"]
-            except:
-                departure = None
-            
-        while destination is None:
-            self.speak("where do you want to go?")
-            guess = self.hear()
-            try:
-                entities = self.parser.entities(guess["transcription"])
-                destination = entities["GPE"]
-            except:
-                destination = None
-            
-        if 'for' in children:
-            when = children['for'][0]
-        else:    
-            self.speak("when do you want to leave?")
-            guess = None
-            while guess is None:
-                guess = self.hear()
-                guess = guess["transcription"]
-                try:
-                    ent = self.parser.entities(guess)
-                    guess = ent["DATE"]
-                except: 
-                    guess = None
-        when = guess
-        return departure, destination, when
+    
         
     def flightconf(self, departure, destination, when):
         conf = None
@@ -329,6 +293,43 @@ class Bea():
             
         self.speak(s+statussentence)
         return True
+
+    def flight(self, sentence):
+        dependencies, children= self.parser.parse(sentence)
+        departure = self.findcities(children, 'from')
+        destination = self.findcities(children, 'to')
+        while departure is None:
+            self.speak("from where do you want to leave?")
+            guess = self.hear()
+            try:
+                entities = self.parser.entities(guess["transcription"])
+                departure = entities["GPE"]
+            except:
+                departure = None
+        while destination is None:
+            self.speak("where do you want to go?")
+            guess = self.hear()
+            try:
+                entities = self.parser.entities(guess["transcription"])
+                destination = entities["GPE"]
+            except:
+                destination = None
+        if 'for' in children:
+            when = children['for'][0]
+        else:    
+            self.speak("when do you want to leave?")
+            guess = None
+            while guess is None:
+                guess = self.hear()
+                guess = guess["transcription"]
+                try:
+                    ent = self.parser.entities(guess)
+                    guess = ent["DATE"]
+                except: 
+                    guess = None
+            when = guess
+         
+        return departure, destination, when
         
     def flightbooking(self, sentence):
         randomprice = random.randint(20,400)

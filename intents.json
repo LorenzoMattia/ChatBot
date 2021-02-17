@@ -1,6 +1,6 @@
 {"intents": [
     {"tag": "greeting",
-     "patterns": ["Hi", "Hey", "Is anyone there?", "Hello", "Hay"]
+     "patterns": ["Hi", "Hey", "Is anyone there?", "Hello", "Hay", "good morning"]
     },
     {"tag": "goodbye",
      "patterns": ["Bye", "See you later", "Goodbye", "bye bye", "see you"]
