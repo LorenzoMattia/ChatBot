@@ -121,8 +121,8 @@ class Bea():
         os.system("mpg321.exe welcome.mp3")
     
     def greeting(self, sentence):
-        print("Hi, how can I help you?")
-        self.speak("Hi, how can I help you?")
+        #print("Hi, how can I help you?")
+        self.speak("Hi, I'm the London's airport vocal assistent. I'm ready to help you, tell me what you need")
         return True
     
     def help(self, sentence):
@@ -178,7 +178,8 @@ class Bea():
         return True  
         
         
-    def flightconf(self, departure, destination, when):
+    #def flightconf(self, departure, destination, when):
+    def flightconf(self, destination, when):
         conf = None
         while conf is None:
             guess = self.hear()
@@ -188,10 +189,12 @@ class Bea():
         if "no" in words:
             self.speak("okay, I'm here for you when you want")
         elif "yes" in words:
-            self.speak("okay, I'm booking a flight for you from " + str(departure) + " to " + str(destination) + " for " + str(when))
+            #self.speak("okay, I'm booking a flight for you from " + str(departure) + " to " + str(destination) + " for " + str(when))
+            self.speak("okay, I'm booking a flight for you to " + str(destination) + " for " + str(when))
         else:
             self.speak("I did not get it, sorry, can you please repeat?")
-            self.flightconf(departure, destination, when)
+            #self.flightconf(departure, destination, when)
+            self.flightconf(destination, when)
     
     def buildgatecode(self):
         letter = random.choice(string.ascii_letters)
@@ -256,11 +259,13 @@ class Bea():
                 self.speak("That is not a valid code. Try again please.")
         code = guess.lower()
         
-        rnd1 = random.randint(0,len(self.shop_type_list)-1)
+        rnd1 = random.randint(0,len(self.cities)-1)
+        '''
         rnd2 = random.randint(0,len(self.shop_type_list)-1)
         while rnd1 == rnd2:
             rnd2 = random.randint(0,len(self.shop_type_list)-1)
         departure = self.cities[rnd1]
+        '''
         destination = self.cities[rnd2]
         
         delays = ["15 minutes", "30 minutes", "1 hour", "2 hours", "4 hours"]
@@ -270,7 +275,8 @@ class Bea():
         
         randomtime = random. randint(8, 22)
         
-        s = "Your flight with code " + code.replace(" ", "") + "from " + departure + " to " + destination +"is " + rndstatus
+        #s = "Your flight with code " + code.replace(" ", "") + "from " + departure + " to " + destination +"is " + rndstatus
+        s = "Your flight with code " + code.replace(" ", "") + " to " + destination +"is " + rndstatus
         
         if rndstatus == "delayed":
             rnd = random.randint(0,len(delays)-1)
@@ -286,20 +292,19 @@ class Bea():
     
     def findcities(self, children, entities, prep):
         city = None
-        print(entities)
         if prep in children:
             try:
-                city = children[prep][0] if children[prep][0] in entities["GPE"] else None
-                print(city)
+                city = children[prep][0] if str(children[prep][0]) in entities['GPE'] else None
             except:
                 return city
         return city
     
     def flight(self, sentence):
-        children= self.parser.parse(sentence)
+        children = self.parser.parse(sentence)
         entities = self.parser.entities(sentence)
-        departure = self.findcities(children, entities, 'from')
+        #departure = self.findcities(children, entities, 'from')
         destination = self.findcities(children, entities,'to')
+        '''
         while departure is None:
             self.speak("from where do you want to leave?")
             guess = self.hear()
@@ -308,10 +313,12 @@ class Bea():
                 departure = entities["GPE"]
             except:
                 departure = None
+        '''
         while destination is None:
             self.speak("where do you want to go?")
             guess = self.hear()
             try:
+                print(entities)
                 entities = self.parser.entities(guess["transcription"])
                 destination = entities["GPE"]
             except:
@@ -335,20 +342,34 @@ class Bea():
                     guess = None
             when = guess
          
-        return departure, destination, when
+        #return departure, destination, when
+        return destination, when
         
     def flightbooking(self, sentence):
         randomprice = random.randint(20,400)
         randomtime = random. randint(8, 22)
         randomexistence = random.randint(0,1)
         
-        departure, destination, when = self.flight(sentence)
-        if randomexistence == 0:
-            self.speak("I'm really sorry about this, but there is no flight like this")
-        else:
-            self.speak("Yes, there is a flight from " + str(departure) + " to " + str(destination) + " for " + str(when) + ". It's cost is " + str(randomprice) + "euros " +\
-            "and it leaves at " + str(randomtime) + "o'clock. Do you want me to book it for you?")
-            self.flightconf(departure, destination, when)
+        #departure, destination, when = self.flight(sentence)
+        destination, when = self.flight(sentence)
+        while randomexistence == 0:
+            self.speak("I'm really sorry about this, but there is no flight like this," + str(when) + "try asking me for another date")
+            guess = None
+            while guess is None:
+                guess = self.hear()
+                guess = guess["transcription"]
+                try:
+                    ent = self.parser.entities(guess)
+                    guess = ent["DATE"]
+                except: 
+                    guess = None
+            when = guess
+            randomexistence = random.randint(0,1)
+        #self.speak("Yes, there is a flight from " + str(departure) + " to " + str(destination) + " for " + str(when) + ". It's cost is " + str(randomprice) + "euros " +\
+        self.speak("Yes, there is a flight to " + str(destination) + " for " + str(when) + ". It's cost is " + str(randomprice) + "euros " +\
+        "and it leaves at " + str(randomtime) + "o'clock. Do you want me to book it for you?")
+        #self.flightconf(departure, destination, when)
+        self.flightconf(destination, when)
         return True
         
     def disablepeople(self, sentence):

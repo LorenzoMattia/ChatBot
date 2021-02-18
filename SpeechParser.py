@@ -47,7 +47,7 @@ class Parser():
             parents2children[str(token)] = [child for child in token.children]
             dict[token.dep_] = token.text
             
-        return dict, parents2children
+        return parents2children
         
     
 if __name__ == '__main__':

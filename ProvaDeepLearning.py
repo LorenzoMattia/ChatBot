@@ -10,7 +10,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 import pickle
 
-vocab_size = 2000
+vocab_size = 1000
 embedding_dim = 16
 max_len = 20
 oov_token = "<OOV>"
@@ -79,7 +79,6 @@ def createmodel(training_labels, training_sentences):
     model.add(Conv1D(32, 5, activation='relu'))
     model.add(GlobalMaxPooling1D())
     model.add(Dense(16, activation='relu'))
-    #model.add(Dense(16, activation='relu'))
     model.add(Dense(num_classes, activation='softmax'))
     model.compile(loss='sparse_categorical_crossentropy', 
                   optimizer='adam', metrics=['accuracy'])
@@ -123,7 +122,7 @@ def evaluate(model, val_padded_sequences, val_labels):
     print('Test accuracy: %f' %acc)
 
 if __name__ == '__main__':
-    train = False
+    train = True
     training_sentences, training_labels, labels, val_sentences, val_labels, num_classes = loaddata()
     if not train:
         model, tokenizer, lbl_encoder = loadmodel()

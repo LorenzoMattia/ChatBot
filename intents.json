@@ -1,9 +1,9 @@
 {"intents": [
     {"tag": "greeting",
-     "patterns": ["Hi", "Hey", "Is anyone there?", "Hello", "Hay", "good morning"]
+     "patterns": ["hi", "hey", "is anyone there?", "hello", "Hay", "good morning", "good evening", "good afternoon", "good night", "nice to meet you"] 
     },
     {"tag": "goodbye",
-     "patterns": ["Bye", "See you later", "Goodbye", "bye bye", "see you"]
+     "patterns": ["bye", "See you later", "goodbye", "bye bye", "see you", "have a nice day", "good job"]
     },
     {"tag": "thanks",
      "patterns": ["Thanks", "Thank you", "That's helpful", "Thanks for the help", "thanks", "thank you", "thank you very much"]
@@ -18,7 +18,10 @@
 	"patterns": ["Can I find a supermarket in the airport", "can I find some electronic shops here", "can I find an Armani store in the airport", "is there a GameStop here", "is there an hairdresser in the airport", "is there a cafe", "Are there any restaurants", "are there any videogames stores here", "are there any clothes shops in the airport"]
 	},
 	{"tag": "flightbooking",
-	"patterns": ["I would like to book a flight from London to Rome for tomorrow", "I want to buy a ticket for a flight from Milan to Helsinki for Sunday", "I would like to buy a ticket for a flight", "Can you please book me a flight from Prague to Berlin for March 24", "I would like to book a flight from Dublin to Madrid", "I want to book a flight"]
+	"patterns": ["I would like to book a flight from London to Rome for tomorrow", "I want to buy a ticket for a flight from Milan to Helsinki for Sunday", 
+	"I would like to buy a ticket for a flight", "Can you please book me a flight from Prague to Berlin for March 24", "I would like to book a flight from Dublin to Madrid", 
+	"I want to book a flight", "i want to go to Madrid", "i want to go to Paris","i would like to go to Berlin", "i need to go to Amsterdam", "i need a flight to New York", 
+	"is it possible to book a flight for Milan", "i need a flight"]
 	},
 	{"tag": "flightinfo",
 	"patterns": ["I would like to know what is the status of my flight", "what is the status of my flight BA2490", "Can you give me some information about my flight TO3145", "do you have any information about my flight"]
@@ -33,13 +36,17 @@
 	"patterns": ["what kind of services are available for disable people", "Do you offer any kind of assistance for disable people", "which kind of assistance do you offer for people with disabilities"]
 	},
 	{"tag": "wheretobuy",
-	"patterns": ["Is there any shop in which I can buy a souvenir", "where can I buy some clothes", "where can I buy a pizza","where can I buy a guitar", "where can I buy a couple of magnets",  "where can I find a magnet for my daugther", "are there any shops which sell perfumes?", "is there a shop that sells souvenirs", "shops selling clothes", "stores selling postcards"]
+	"patterns": ["Is there any shop in which I can buy a souvenir", "Is there any shop in which I can buy a chair", "i want to eat a sandwhich", 
+	"i'm starving", "i'm angry", "i need to buy a fragrance", "i need some sugar", "where can I buy some clothes", "where can I buy a pizza","where can I buy a guitar", 
+	"where can I buy some sushi", "where can I buy a couple of magnets", "where can I find a magnet for my daugther", "are there any shops which sell perfumes",
+	"are there any shops which sell perfumes", "is there a shop that sells souvenirs", "shops selling clothes", "stores selling postcards", "i need some water", 
+	"where can i drink something", "is it possible to buy a videogame somewhere"]
 	},
 	{"tag": "rentacar",
-	"patterns": ["i would like to rent a car", "i want to rent a car", "can i rent a car", "is it possible to rent a car"]
+	"patterns": ["i would like to rent a car", "i want to rent a car", "can i rent a car", "is it possible to rent a car", "i need a car", "i need to rent a car", "i would like to lease a car", "i want to lease a car", "can i hire a car", "is it possible to hire a car"]
 	},
 	{"tag": "bookhotel",
-	"patterns": ["do you know if there is an hotel next to the airport", "can you suggest me an hotel near the airport", "is there any hotel not too much far from here"]
+	"patterns": ["do you know if there is an hotel next to the airport", "can you suggest me an hotel near the airport", "is there any hotel not too much far from here", "i need an hotel"]
 	}
 ]
 }
