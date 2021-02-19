@@ -8,40 +8,6 @@ import spacy
 from SpeechParser import Parser
 import numpy as np
 
-#["Please provide us your complaint in order to assist you", "Please mention your complaint, we will reach you and sorry for any inconvenience caused"]
-
-'''
-
-{"tag": "shoptypes",
-	"patterns": ["which kind of shops are there in the airport", "which types of shops can I find in the airport", "what kind of shops are there in the airport"]
-	},
-{"tag": "about",
-     "patterns": ["Who are you?", "What are you?", "Who you are?" ]
-    },
-    {"tag": "name",
-    "patterns": ["what is your name", "what should I call you", "whats your name?"]
-    },
-    
-    def shops(self, sentence):
-        rnd1 = random.randint(0,len(self.shop_list)-1)
-        rnd2 = random.randint(0,len(self.shop_list)-1)
-        while rnd1 == rnd2:
-            rnd2 = random.randint(0,len(self.shop_list)-1)
-        print('Some of the shops you can find here are the followings: ' +  self.shop_list[rnd1] + ', ' + self.shop_list[rnd2])
-        self.speak('Some of the shops you can find here are the followings: ' +  self.shop_list[rnd1] + ', ' + self.shop_list[rnd2])
-        return True
-    
-    def shoptypes(self, sentence):
-        rnd1 = random.randint(0,len(self.shop_types)-1)
-        rnd2 = random.randint(0,len(self.shop_types)-1)
-        while rnd1 == rnd2:
-            rnd2 = random.randint(0,len(self.shop_types)-1)
-        print('For example you can find these types of shops: ' +  self.shop_types[rnd1] + ', ' + shop_types[rnd2])
-        self.speak('For example you can find these types of shops: ' +  shop_types[rnd1] + ', ' + shop_types[rnd2])
-        return True
-'''
-
-#sistemare la conferma della prenotazione volo
 
 class Bea():
 
@@ -121,7 +87,6 @@ class Bea():
         os.system("mpg321.exe welcome.mp3")
     
     def greeting(self, sentence):
-        #print("Hi, how can I help you?")
         self.speak("Hi, I'm the London's airport vocal assistent. I'm ready to help you, tell me what you need")
         return True
     
@@ -162,10 +127,12 @@ class Bea():
         here = False
         for string in self.shop_list:
             if complobj in string or string in complobj:
+                complobj = string
                 here = True
         if not here:
             for string in self.shop_type_list:
                 if complobj in string or string in complobj:
+                    complobj = string
                     here = True
         if here:
             self.speak("Yes, you can find " + complobj + ' in our airport!')
@@ -266,7 +233,7 @@ class Bea():
             rnd2 = random.randint(0,len(self.shop_type_list)-1)
         departure = self.cities[rnd1]
         '''
-        destination = self.cities[rnd2]
+        destination = self.cities[rnd1]
         
         delays = ["15 minutes", "30 minutes", "1 hour", "2 hours", "4 hours"]
         status = ["in time", "cancelled", "delayed"]
@@ -353,7 +320,7 @@ class Bea():
         #departure, destination, when = self.flight(sentence)
         destination, when = self.flight(sentence)
         while randomexistence == 0:
-            self.speak("I'm really sorry about this, but there is no flight like this," + str(when) + "try asking me for another date")
+            self.speak("I'm really sorry about this, but there is no flight like this" + str(when) + "try asking me for another date")
             guess = None
             while guess is None:
                 guess = self.hear()
@@ -366,8 +333,8 @@ class Bea():
             when = guess
             randomexistence = random.randint(0,1)
         #self.speak("Yes, there is a flight from " + str(departure) + " to " + str(destination) + " for " + str(when) + ". It's cost is " + str(randomprice) + "euros " +\
-        self.speak("Yes, there is a flight to " + str(destination) + " for " + str(when) + ". It's cost is " + str(randomprice) + "euros " +\
-        "and it leaves at " + str(randomtime) + "o'clock. Do you want me to book it for you?")
+        self.speak("Yes, there is a flight to" + str(destination) + "for" + str(when) + ". It's cost is " + str(randomprice) + "euros " +\
+        "and it leaves at" + str(randomtime) + "o'clock. Do you want me to book it for you?")
         #self.flightconf(departure, destination, when)
         self.flightconf(destination, when)
         return True
@@ -376,7 +343,6 @@ class Bea():
         self.speak("Dear customer, we offer any kind of assistance for people with disabilities. \
         The airport offers assistance for any displacement in the airport, help for flights information and for luggage displacement\
         . Which kind of assistance do you need?")
-        
         guess = None
         while guess is None:
             guess = self.hear()
@@ -393,7 +359,7 @@ class Bea():
             except: 
                 guess = None
         when = guess
-        self.speak("Perfect, one of our dependents will be available for you " + when + "for the assistance service you have chosen: "+ assistance_needed)
+        self.speak("Perfect, one of our dependents will be available for you" + when + "for the assistance service you have chosen: "+ assistance_needed)
         return True
         
     def wheretobuy(self, sentence):
@@ -443,7 +409,7 @@ class Bea():
             guess = guess["transcription"]
             try:
                 ent = self.parser.entities(guess)
-                guess = ent["DATE"]
+                guess = ent["DATE"][0]
             except: 
                 guess = None
         num_days = guess

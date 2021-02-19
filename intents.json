@@ -12,28 +12,37 @@
     "patterns": ["Could you help me?", "give me a hand please", "Can you help?", "What can you do for me?", "I need a support", "I need a help", "support me please"]
     },
     {"tag": "complaint",
-    "patterns": ["have a complaint", "I want to raise a complaint", "there is a complaint about a service", "complaint", "i have a complaint"]
+    "patterns": ["have a complaint", "I want to raise a complaint", "there is a complaint about a service", "complaint", "i have a complaint", "polemic", "raise a polemic"]
     },
 	{"tag": "shoppresence",
-	"patterns": ["Can I find a supermarket in the airport", "can I find some electronic shops here", "can I find an Armani store in the airport", "is there a GameStop here", "is there an hairdresser in the airport", "is there a cafe", "Are there any restaurants", "are there any videogames stores here", "are there any clothes shops in the airport"]
+	"patterns": ["Can I find a supermarket in the airport", "can I find some electronic shops here", "can I find an Armani store in the airport", 
+	"is there a GameStop here", "is there an hairdresser in the airport", "is there a cafe", "Are there any restaurants", 
+	"are there any videogames stores here", "are there any clothes shops in the airport"]
 	},
 	{"tag": "flightbooking",
-	"patterns": ["I would like to book a flight from London to Rome for tomorrow", "I want to buy a ticket for a flight from Milan to Helsinki for Sunday", 
-	"I would like to buy a ticket for a flight", "Can you please book me a flight from Prague to Berlin for March 24", "I would like to book a flight from Dublin to Madrid", 
+	"patterns": ["I would like to book a flight to Rome for tomorrow", "I want to buy a ticket for a flight to Helsinki for Sunday", 
+	"I would like to buy a ticket for a flight", "Can you please book me a flight to Berlin for March 24", "I would like to book a flight to Madrid", 
 	"I want to book a flight", "i want to go to Madrid", "i want to go to Paris","i would like to go to Berlin", "i need to go to Amsterdam", "i need a flight to New York", 
-	"is it possible to book a flight for Milan", "i need a flight"]
+	"is it possible to book a flight for Milan", "i need a flight", "can you book me a flight please", "can you please book me a flight to Prague", "book a flight", "buy a ticket",
+	"buy a ticket for a flight"]
 	},
 	{"tag": "flightinfo",
-	"patterns": ["I would like to know what is the status of my flight", "what is the status of my flight BA2490", "Can you give me some information about my flight TO3145", "do you have any information about my flight"]
+	"patterns": ["I would like to know what is the status of my flight", "what is the status of my flight BA2490", 
+	"Can you give me some information about my flight TO3145", "do you have any information about my flight", "status of flight", 
+	"status", "information about flight", "information"]
 	},
 	{"tag": "flightgate",
-	"patterns": ["I would like to know which is the gate of my flight RY3168", "Do you know what is the gate of my flight", "Can I ask you what is the gate of my flight", "Gate of flight AI2874?"]
+	"patterns": ["I would like to know which is the gate of my flight RY3168", "Do you know what is the gate of my flight", 
+	"Can I ask you what is the gate of my flight", "Gate of flight AI2874?", "gate of my flight", "gate", "i need to know what is my gate"]
 	},
 	{"tag": "flightcheckin",
-	"patterns": ["Do you know what is the terminal of my flight RY3168", "What is the terminal of my flight", "Where can I check in for my flight TO3145"]
+	"patterns": ["Do you know what is the terminal of my flight RY3168", "What is the terminal of my flight", "Where can I check in for my flight TO3145",
+	"terminal", "check in", "check in of flight", "i need to check in", "i need to know where can i check in", "i need to know what is my terminal"]
 	},
 	{"tag" : "disablepeople",
-	"patterns": ["what kind of services are available for disable people", "Do you offer any kind of assistance for disable people", "which kind of assistance do you offer for people with disabilities"]
+	"patterns": ["what kind of services are available for disable people", "Do you offer any kind of assistance for disable people", 
+	"which kind of assistance do you offer for people with disabilities", "people with disabilities", "disable people", "disable", "services for disable people",
+	"assistance for people with disabilities", "disabilities"]
 	},
 	{"tag": "wheretobuy",
 	"patterns": ["Is there any shop in which I can buy a souvenir", "Is there any shop in which I can buy a chair", "i want to eat a sandwhich", 
@@ -43,10 +52,13 @@
 	"where can i drink something", "is it possible to buy a videogame somewhere"]
 	},
 	{"tag": "rentacar",
-	"patterns": ["i would like to rent a car", "i want to rent a car", "can i rent a car", "is it possible to rent a car", "i need a car", "i need to rent a car", "i would like to lease a car", "i want to lease a car", "can i hire a car", "is it possible to hire a car"]
+	"patterns": ["i would like to rent a car", "i want to rent a car", "can i rent a car", "is it possible to rent a car", "i need a car", "i need to rent a car", 
+	"i would like to lease a car", "i want to lease a car", "can i hire a car", "is it possible to hire a car", "car", "rent a car", "car rent"]
 	},
 	{"tag": "bookhotel",
-	"patterns": ["do you know if there is an hotel next to the airport", "can you suggest me an hotel near the airport", "is there any hotel not too much far from here", "i need an hotel"]
+	"patterns": ["do you know if there is an hotel next to the airport", "can you suggest me an hotel near the airport", "is there any hotel not too much far from here", 
+	"i need an hotel", "can you suggest me an hotel","are there any hotels near the airport", "hotel", "what about an hotel", "hotels you can suggest me", 
+	"is there an hotel not far from here that you can suggest me", "hotel", "book room of an hotel", "i need a room in an hotel", "hotels", "hotel needed"]
 	}
 ]
 }

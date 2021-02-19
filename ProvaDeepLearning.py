@@ -122,7 +122,7 @@ def evaluate(model, val_padded_sequences, val_labels):
     print('Test accuracy: %f' %acc)
 
 if __name__ == '__main__':
-    train = True
+    train = False
     training_sentences, training_labels, labels, val_sentences, val_labels, num_classes = loaddata()
     if not train:
         model, tokenizer, lbl_encoder = loadmodel()
