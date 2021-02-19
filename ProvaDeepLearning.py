@@ -3,8 +3,8 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import callbacks
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Embedding, Flatten, GlobalAveragePooling1D, GlobalMaxPooling1D, MaxPooling1D, Dropout, Conv1D
+from tensorflow.keras.models import Sequential, Model
+from tensorflow.keras.layers import Input, concatenate, Dense, Embedding, Flatten, GlobalAveragePooling1D, GlobalMaxPooling1D, MaxPooling1D, Dropout, Conv1D, Reshape
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
@@ -72,7 +72,7 @@ def createmodel(training_labels, training_sentences):
     #text tokenization
     tokenizer = Tokenizer(num_words=vocab_size, oov_token=oov_token)
     tokenizer.fit_on_texts(training_sentences)
-    
+    '''
     #creating the model
     model = Sequential()
     model.add(Embedding(vocab_size, embedding_dim, input_length=max_len))
@@ -80,6 +80,21 @@ def createmodel(training_labels, training_sentences):
     model.add(GlobalMaxPooling1D())
     model.add(Dense(16, activation='relu'))
     model.add(Dense(num_classes, activation='softmax'))
+    model.compile(loss='sparse_categorical_crossentropy', 
+                  optimizer='adam', metrics=['accuracy'])
+    '''
+
+    inp = Input((20))
+    x = Embedding(vocab_size, embedding_dim, input_length=max_len)(inp)
+    out1 = Conv1D(32, 1, activation='relu', padding = "same")(x)
+    out2 = Conv1D(32, 2, activation='relu', padding = "same")(x)
+    out5 = Conv1D(32, 5, activation='relu', padding = "same")(x)
+    out = concatenate([out1, out2, out5], axis = 1)
+    x = GlobalMaxPooling1D()(out)
+    x = Dense(32, activation='relu')(x)
+    x = Dense(num_classes, activation='softmax')(x)
+    model = Model(inputs = inp, outputs= x)
+    model.summary()
     model.compile(loss='sparse_categorical_crossentropy', 
                   optimizer='adam', metrics=['accuracy'])
                   
@@ -107,6 +122,7 @@ def training(model, padded_sequences, val_padded_sequences, training_labels, val
     #training
     early_stop = callbacks.EarlyStopping(monitor='val_loss',patience=100, restore_best_weights = True)
     epochs = 500
+    
     history = model.fit(padded_sequences, np.array(training_labels), epochs=epochs, validation_data = (val_padded_sequences, np.array(val_labels)), callbacks = [early_stop])
     model.save("chat_model")
     with open('tokenizer.pickle', 'wb') as handle:
@@ -122,7 +138,7 @@ def evaluate(model, val_padded_sequences, val_labels):
     print('Test accuracy: %f' %acc)
 
 if __name__ == '__main__':
-    train = False
+    train = True
     training_sentences, training_labels, labels, val_sentences, val_labels, num_classes = loaddata()
     if not train:
         model, tokenizer, lbl_encoder = loadmodel()

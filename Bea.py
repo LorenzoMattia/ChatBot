@@ -259,9 +259,15 @@ class Bea():
     
     def findcities(self, children, entities, prep):
         city = None
+        print(children)
+        print(entities)
         if prep in children:
             try:
-                city = children[prep][0] if str(children[prep][0]) in entities['GPE'] else None
+                for word in children[prep]:
+                    if str(word) in entities['GPE']:
+                        city = word
+                if city is None:
+                    city = entities['GPE'][0]
             except:
                 return city
         return city
@@ -285,7 +291,6 @@ class Bea():
             self.speak("where do you want to go?")
             guess = self.hear()
             try:
-                print(entities)
                 entities = self.parser.entities(guess["transcription"])
                 destination = entities["GPE"]
             except:
