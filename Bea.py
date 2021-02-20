@@ -9,16 +9,29 @@ from SpeechParser import Parser
 import numpy as np
 
 
+'''
+{"tag": "shoppresence",
+	"patterns": ["Can I find a supermarket in the airport", "can I find some electronic shops here", "can I find an Armani store in the airport", 
+	"is there a GameStop here", "is there an hairdresser in the airport", "is there a cafe", "Are there any restaurants", 
+	"are there any videogames stores here", "are there any clothes shops in the airport"]
+	},
+    
+	{"tag": "shoppresence",
+	"patterns": ["is it possible to find a supermarket", "can I find here a toy store", "is there any Gucci store in the airport"]
+	},
+'''
+
 class Bea():
 
     def __init__(self, recognizer, microphone, limit):
         self.shop_types = ["souvenir stores", "supermarket duty free", "luxury shops", "restaurants", "cafes"]
         self.shop_list = ['mediaworld', 'nike', 'adidas', 'mcdonald']
         self.shop_type_list = ['electronic', 'restaurant', 'clothes', 'cafe', 'hairdresser', 'supermarket']
-        self.cities = ["Rome", "London", "Berlin", "Amsterdam", "Dublin", "Madrid", "Milan", "Dublin", "Helsinki", "Oslo", "New York", "Los Angeles"]
-        self.items = ["souvenir", "toy", "clothes", "magnet", "perfume"]
+        self.cities = ["Rome", "Berlin", "Amsterdam", "Dublin", "Madrid", "Milan", "Dublin", "Helsinki", "Oslo", "New York", "Los Angeles"]
+        self.items = ["souvenir", "toy", "clothes", "magnet", "perfume", "pizza", "sandwich", "charger"]
         self.shops = [["London souvenirs", "Souvenirs from England", "U.K. souvenirs"], ["Game Stop", "Toys U.K"], \
-                    ["Burberry", "Gucci", "Fendi"], ["London souvenirs", "Magnets Love", "U.K. souvenirs"], ["duty free"]]
+                    ["Burberry", "Gucci", "Fendi"], ["London souvenirs", "Magnets Love", "U.K. souvenirs"], ["duty free"], ["pizza hut", "italy pizza"],\
+                    ["super sandwich", "subway"], ["mediaworld", "euronics"]]
         self.car_models = ["luxury car"," mini van","utilitarian car"]
         self.items2shops = dict(zip(self.items, self.shops))
         self.recognizer = recognizer
@@ -111,7 +124,8 @@ class Bea():
         choice = random.randint(0,len(answers)-1)
         self.speak(answers[choice])
         return False
-    
+        
+    '''
     def shoppresence(self, sentence):
         complobj = None
         chunks = self.parser.noun_chunks(sentence)
@@ -143,7 +157,7 @@ class Bea():
                 rnd2 = random.randint(0,len(self.shop_type_list)-1)
             self.speak("No, I'm really sorry about this. But you can find some other very interesting shops like: "+  self.shop_type_list[rnd1] + ', ' + self.shop_type_list[rnd2])
         return True  
-        
+    '''    
         
     #def flightconf(self, departure, destination, when):
     def flightconf(self, destination, when):
@@ -194,7 +208,7 @@ class Bea():
                 self.speak("That is not a valid code. Try again please.")
         code = guess.lower()
         gatecode = self.buildgatecode()
-        self.speak("The gate of yout flight " + code.replace(" ", "") + "is " + gatecode)
+        self.speak("The gate of your flight " + code.replace(" ", "") + "is " + gatecode)
         return True
        
     def flightcheckin(self,sentence):
@@ -291,8 +305,8 @@ class Bea():
             self.speak("where do you want to go?")
             guess = self.hear()
             try:
-                entities = self.parser.entities(guess["transcription"])
-                destination = entities["GPE"]
+                ent = self.parser.entities(guess["transcription"])
+                destination = ent["GPE"]
             except:
                 destination = None
         '''
@@ -360,29 +374,37 @@ class Bea():
             guess = guess["transcription"]
             try:
                 ent = self.parser.entities(guess)
-                guess = ent["DATE"]
+                guess = ent["DATE"][0]
             except: 
                 guess = None
         when = guess
         self.speak("Perfect, one of our dependents will be available for you" + when + "for the assistance service you have chosen: "+ assistance_needed)
         return True
-        
+    
+    def getItem(self, chunks):
+        item = None
+        try:
+            item = chunks['dobj'] if 'dobj' in chunks.keys() else None
+        except:
+            return None
+        return item
+    
     def wheretobuy(self, sentence):
-        complobj = None
         chunks = self.parser.noun_chunks(sentence)
-        print (chunks)
-        complobj = chunks['dobj'] if 'dobj' in chunks.keys() else None
-        while complobj is None:
-            self.speak("I've not understood. Please repeat.")
-            guess = self.hear()
-            sentence = guess["transcription"]
-            chunks = self.parser.noun_chunks(sentence)
-            complobj = chunks['dobj'] if 'dobj' in chunks.keys() else None
+        item = self.getItem(chunks)
+        guess = None
+        
+        while item is None:
+            while guess is None:
+                self.speak("I've not understood. Please repeat.")
+                guess = self.hear()
+                guess = guess["transcription"]
+            item = self.getItem(self.parser.noun_chunks(guess))
         
         soldhere = False 
         
         for string in self.items:
-            if string in complobj or complobj in string:
+            if string in item or item in string:
                 soldhere = True
                 break
             
@@ -391,7 +413,7 @@ class Bea():
             for i in self.items2shops[string]:
                 str = str + i
                 str = str + ", "
-            self.speak("You can buy " + complobj + "in the following shops: "+ str)
+            self.speak("You can buy " + item + "in the following shops: "+ str)
             
         else:
             self.speak("I'm really sorry, there are no shops selling what you are looking for")
@@ -419,7 +441,7 @@ class Bea():
                 guess = None
         num_days = guess
         
-        self.speak("Ok, you have rent a " + car_model + " for "+ num_days)
+        self.speak("Ok, you have rent a" + car_model + "for "+ num_days)
         
         return True
 
@@ -438,7 +460,7 @@ class Bea():
                 guess = guess["transcription"]
                 try:
                     ent = self.parser.entities(guess)
-                    guess = ent["DATE"]
+                    guess = ent["DATE"][0]
                 except: 
                     guess = None
             num_days = guess

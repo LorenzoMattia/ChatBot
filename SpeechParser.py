@@ -5,6 +5,14 @@ class Parser():
     def __init__(self):
         self.nlp = spacy.load("en_core_web_sm")
     
+    def remove_stop_words(self, sentence):
+        all_stopwords = self.nlp.Defaults.stop_words
+        all_stopwords.add('the')
+        all_stopwords.add('a')
+        all_stopwords.add('an')
+        tokens_without_sw = [word for word in self.words(sentence) if not word in all_stopwords]
+        return tokens_without_sw
+        
     def noun_chunks(self, sentence):
         dict = {}
         sentence = self.nlp(sentence)

@@ -9,7 +9,9 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 import pickle
+from SpeechParser import Parser
 
+#p = Parser()
 vocab_size = 1000
 embedding_dim = 16
 max_len = 20
@@ -83,12 +85,12 @@ def createmodel(training_labels, training_sentences):
     model.compile(loss='sparse_categorical_crossentropy', 
                   optimizer='adam', metrics=['accuracy'])
     '''
-
+    
     inp = Input((20))
     x = Embedding(vocab_size, embedding_dim, input_length=max_len)(inp)
     out1 = Conv1D(32, 1, activation='relu', padding = "same")(x)
     out2 = Conv1D(32, 2, activation='relu', padding = "same")(x)
-    out5 = Conv1D(32, 5, activation='relu', padding = "same")(x)
+    out5 = Conv1D(32, 3, activation='relu', padding = "same")(x)
     out = concatenate([out1, out2, out5], axis = 1)
     x = GlobalMaxPooling1D()(out)
     x = Dense(32, activation='relu')(x)
@@ -117,7 +119,6 @@ def tokenization(tokenizer, training_sentences, val_sentences):
     
     return padded_sequences, val_padded_sequences
 
-
 def training(model, padded_sequences, val_padded_sequences, training_labels, val_labels):
     #training
     early_stop = callbacks.EarlyStopping(monitor='val_loss',patience=100, restore_best_weights = True)
@@ -138,7 +139,7 @@ def evaluate(model, val_padded_sequences, val_labels):
     print('Test accuracy: %f' %acc)
 
 if __name__ == '__main__':
-    train = True
+    train = False
     training_sentences, training_labels, labels, val_sentences, val_labels, num_classes = loaddata()
     if not train:
         model, tokenizer, lbl_encoder = loadmodel()
