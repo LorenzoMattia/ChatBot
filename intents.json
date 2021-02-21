@@ -24,7 +24,7 @@
 	{"tag": "flightinfo",
 	"patterns": ["I would like to know what is the status of my flight", "what is the status of my flight BA2490", 
 	"Can you give me some information about my flight TO3145", "do you have any information about my flight", "status of flight", 
-	"status", "information about flight", "information"]
+	"status", "information about flight", "information", "is my flight in time", "everything ok with my flight", "news about my flight", "is my flight confirmed"]
 	},
 	{"tag": "flightgate",
 	"patterns": ["I would like to know which is the gate of my flight RY3168", "Do you know what is the gate of my flight", 

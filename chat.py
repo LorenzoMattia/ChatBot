@@ -56,7 +56,7 @@ print("Start messaging with the bot (type quit to stop)!")
 if __name__ == '__main__':
     with open("intents.json") as file:
         data = json.load(file)
-    PROMPT_LIMIT = 5
+    PROMPT_LIMIT = 1
     recognizer = sr.Recognizer()
     microphone = sr.Microphone()
     assistent = Bea(recognizer, microphone, PROMPT_LIMIT)

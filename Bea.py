@@ -120,7 +120,8 @@ class Bea():
         return False
     
     def complaint(self, sentence):
-        answers = ["Please provide us your complaint in order to assist you", "Please mention your complaint, we will reach you and sorry for any inconvenience caused"]
+        answers = ["Please provide your complaint to the management to help them improving our services", 
+        "Please mention your complaint to the management, they will be able to assist you"]
         choice = random.randint(0,len(answers)-1)
         self.speak(answers[choice])
         return False
@@ -158,24 +159,6 @@ class Bea():
             self.speak("No, I'm really sorry about this. But you can find some other very interesting shops like: "+  self.shop_type_list[rnd1] + ', ' + self.shop_type_list[rnd2])
         return True  
     '''    
-        
-    #def flightconf(self, departure, destination, when):
-    def flightconf(self, destination, when):
-        conf = None
-        while conf is None:
-            guess = self.hear()
-            conf = guess["transcription"]
-        conf = conf.lower()
-        words = self.parser.words(conf)
-        if "no" in words:
-            self.speak("okay, I'm here for you when you want")
-        elif "yes" in words:
-            #self.speak("okay, I'm booking a flight for you from " + str(departure) + " to " + str(destination) + " for " + str(when))
-            self.speak("okay, I'm booking a flight for you to " + str(destination) + " for " + str(when))
-        else:
-            self.speak("I did not get it, sorry, can you please repeat?")
-            #self.flightconf(departure, destination, when)
-            self.flightconf(destination, when)
     
     def buildgatecode(self):
         letter = random.choice(string.ascii_letters)
@@ -197,9 +180,10 @@ class Bea():
         
     def flightgate(self, sentence):
         self.speak("To avoid any mistake looking for the gate of your flight, please tell me only the code of your flight with clear voice")
-        guess = None
+        guess = self.hear()["transcription"]
         isValid = False
         while guess is None or not isValid:
+            self.speak("I've not understood. Please repeat")
             guess = self.hear()
             guess = guess["transcription"]
             if self.checkflightcode(guess):
@@ -213,9 +197,10 @@ class Bea():
        
     def flightcheckin(self,sentence):
         self.speak("To avoid any mistake looking for the terminal of your flight, please tell me only the code of your flight with clear voice")
-        guess = None
+        guess = self.hear()["transcription"]
         isValid = False
         while guess is None or not isValid:
+            self.speak("I've not understood. Please repeat")
             guess = self.hear()
             guess = guess["transcription"]
             if self.checkflightcode(guess):
@@ -229,9 +214,10 @@ class Bea():
         
     def flightinfo(self, sentence):
         self.speak("To avoid any mistake looking for the status of your flight, please tell me only the code of your flight with clear voice")
-        guess = None
+        guess = self.hear()["transcription"]
         isValid = False
         while guess is None or not isValid:
+            self.speak("I've not understood. Please repeat")
             guess = self.hear()
             guess = guess["transcription"]
             if self.checkflightcode(guess):
@@ -286,21 +272,41 @@ class Bea():
                 return city
         return city
     
+    def book_name(self):
+        self.speak("In what name should I make the reservation?")
+        guess = None
+        guess = self.hear()["transcription"]
+        while guess is None:
+            self.speak("I've not understood. Please repeat")
+            guess = self.hear()
+            guess = guess["transcription"]
+        
+        return guess
+    
+    def flightconf(self, destination, when):
+        conf = self.hear()["transcription"]
+        while conf is None:
+            self.speak("I've not understood. Please repeat")
+            guess = self.hear()
+            conf = guess["transcription"]
+        conf = conf.lower()
+        words = self.parser.words(conf)
+        if "no" in words:
+            self.speak("okay, I'm here for you when you want")
+        elif "yes" in words:
+            name = self.book_name()
+            #self.speak("okay, I'm booking a flight for you from " + str(departure) + " to " + str(destination) + " for " + str(when))
+            self.speak("okay, I'm booking a flight for you to" + str(destination) + "for" + str(when) + "in name" + name)
+        else:
+            self.speak("I did not get it, sorry, can you please repeat?")
+            #self.flightconf(departure, destination, when)
+            self.flightconf(destination, when)
+    
     def flight(self, sentence):
         children = self.parser.parse(sentence)
         entities = self.parser.entities(sentence)
         #departure = self.findcities(children, entities, 'from')
         destination = self.findcities(children, entities,'to')
-        '''
-        while departure is None:
-            self.speak("from where do you want to leave?")
-            guess = self.hear()
-            try:
-                entities = self.parser.entities(guess["transcription"])
-                departure = entities["GPE"]
-            except:
-                departure = None
-        '''
         while destination is None:
             self.speak("where do you want to go?")
             guess = self.hear()
@@ -309,16 +315,14 @@ class Bea():
                 destination = ent["GPE"]
             except:
                 destination = None
-        '''
-        if 'for' in children:
-            when = children['for'][0]
-        '''
+
         if 'DATE' in entities.keys():
             when = entities["DATE"]
         else:    
             self.speak("when do you want to leave?")
-            guess = None
+            guess = self.hear()["transcription"]
             while guess is None:
+                self.speak("I've not understood. Please repeat")
                 guess = self.hear()
                 guess = guess["transcription"]
                 try:
@@ -339,9 +343,10 @@ class Bea():
         #departure, destination, when = self.flight(sentence)
         destination, when = self.flight(sentence)
         while randomexistence == 0:
-            self.speak("I'm really sorry about this, but there is no flight like this" + str(when) + "try asking me for another date")
-            guess = None
+            self.speak("I'm really sorry about this, but there are no flights to" + str(destination) + str(when) + "try asking me for another date")
+            guess = self.hear()["transcription"]
             while guess is None:
+                self.speak("I've not understood. Please repeat")
                 guess = self.hear()
                 guess = guess["transcription"]
                 try:
@@ -362,14 +367,16 @@ class Bea():
         self.speak("Dear customer, we offer any kind of assistance for people with disabilities. \
         The airport offers assistance for any displacement in the airport, help for flights information and for luggage displacement\
         . Which kind of assistance do you need?")
-        guess = None
+        guess = self.hear()["transcription"]
         while guess is None:
+            self.speak("I've not understood. Please repeat")
             guess = self.hear()
             guess = guess["transcription"]
         assistance_needed = guess
         self.speak("When do you need it?")
-        guess = None
+        guess = self.hear()["transcription"]
         while guess is None:
+            self.speak("I've not understood. Please repeat")
             guess = self.hear()
             guess = guess["transcription"]
             try:
@@ -396,7 +403,7 @@ class Bea():
         
         while item is None:
             while guess is None:
-                self.speak("I've not understood. Please repeat.")
+                self.speak("I've not understood. Please, tell me what you want to buy.")
                 guess = self.hear()
                 guess = guess["transcription"]
             item = self.getItem(self.parser.noun_chunks(guess))
@@ -420,9 +427,10 @@ class Bea():
         return True
     
     def rentacar(self,sentence):
-        self.speak("Yes, which kind of car do you need? The followings are the models we have available: luxury car, mini van, utilitarian car.")
-        guess = None
+        self.speak("Yes, the followings are the models we have available: luxury car, mini van, utilitarian car. Which one are you interested in?")
+        guess = self.hear()["transcription"]
         while guess is None or guess not in self.car_models:
+            self.speak("I've not understood. Please repeat")
             guess = self.hear()
             guess = guess["transcription"]
             if guess not in self.car_models:
@@ -430,8 +438,9 @@ class Bea():
         car_model = guess
         isValid = False
         self.speak("For how many days do you need it?. Please specify the exact number of days")
-        guess = None
+        guess = self.hear()["transcription"]
         while guess is None:
+            self.speak("I've not understood. Please repeat")
             guess = self.hear()
             guess = guess["transcription"]
             try:
@@ -442,20 +451,21 @@ class Bea():
         num_days = guess
         
         self.speak("Ok, you have rent a" + car_model + "for "+ num_days)
-        
         return True
 
     def bookhotel(self, sentence):
         self.speak("I can suggest you a wonderful hotel near the airport. The Royal hotel. Do you want me to book a room there for you?")
-        guess = None
+        guess = self.hear()["transcription"]
         while guess is None:
+            self.speak("I've not understood. Please repeat")
             guess = self.hear()
             guess = guess["transcription"]
         confirm = guess
         if "yes" in confirm or "Yes" in confirm:
             self.speak("For how many days do you need it?. Please specify the exact number of days")
-            guess = None
+            guess = self.hear()["transcription"]
             while guess is None:
+                self.speak("I've not understood. Please repeat")
                 guess = self.hear()
                 guess = guess["transcription"]
                 try:
@@ -465,7 +475,8 @@ class Bea():
                     guess = None
             num_days = guess
             
-            self.speak("Ok, I have booked for you a room in the Royal hotel for" + num_days)
+            name = self.book_name()
+            self.speak("Ok, I have booked for you a room in the Royal hotel for" + num_days + "in name" + name)
         else:
             self.speak("Ok, I'm here for you when you want")
         return True
