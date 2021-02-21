@@ -32,7 +32,7 @@ class Bea():
         self.shops = [["London souvenirs", "Souvenirs from England", "U.K. souvenirs"], ["Game Stop", "Toys U.K"], \
                     ["Burberry", "Gucci", "Fendi"], ["London souvenirs", "Magnets Love", "U.K. souvenirs"], ["duty free"], ["pizza hut", "italy pizza"],\
                     ["super sandwich", "subway"], ["mediaworld", "euronics"]]
-        self.car_models = ["luxury car"," mini van","utilitarian car"]
+        self.car_models = ["luxury car","utilitarian car"]
         self.items2shops = dict(zip(self.items, self.shops))
         self.recognizer = recognizer
         self.microphone = microphone
@@ -166,6 +166,8 @@ class Bea():
         return letter + str(number)
     
     def checkflightcode(self, code):
+        if code is None:
+            return False
         if len(code) is not 6:
             return False
         else:
@@ -181,11 +183,14 @@ class Bea():
     def flightgate(self, sentence):
         self.speak("To avoid any mistake looking for the gate of your flight, please tell me only the code of your flight with clear voice")
         guess = self.hear()["transcription"]
-        isValid = False
+        isValid = self.checkflightcode(guess)
         while guess is None or not isValid:
-            self.speak("I've not understood. Please repeat")
+            self.speak("I've not understood. Please repeat or tell me stop to end the conversation")
             guess = self.hear()
             guess = guess["transcription"]
+            if guess is not None and (guess == "stop" or "stop" in guess):
+                self.speak("okay, I'm here for you when you want")
+                return True
             if self.checkflightcode(guess):
                 isValid = True
             else:
@@ -198,11 +203,14 @@ class Bea():
     def flightcheckin(self,sentence):
         self.speak("To avoid any mistake looking for the terminal of your flight, please tell me only the code of your flight with clear voice")
         guess = self.hear()["transcription"]
-        isValid = False
+        isValid = self.checkflightcode(guess)
         while guess is None or not isValid:
-            self.speak("I've not understood. Please repeat")
+            self.speak("I've not understood. Please repeat or tell me stop to end the conversation")
             guess = self.hear()
             guess = guess["transcription"]
+            if guess is not None and (guess == "stop" or "stop" in guess):
+                self.speak("okay, I'm here for you when you want")
+                return True
             if self.checkflightcode(guess):
                 isValid = True
             else:
@@ -215,11 +223,14 @@ class Bea():
     def flightinfo(self, sentence):
         self.speak("To avoid any mistake looking for the status of your flight, please tell me only the code of your flight with clear voice")
         guess = self.hear()["transcription"]
-        isValid = False
+        isValid = self.checkflightcode(guess)
         while guess is None or not isValid:
-            self.speak("I've not understood. Please repeat")
+            self.speak("I've not understood. Please repeat or tell me stop to end the conversation")
             guess = self.hear()
             guess = guess["transcription"]
+            if guess is not None and (guess == "stop" or "stop" in guess):
+                self.speak("okay, I'm here for you when you want")
+                return True
             if self.checkflightcode(guess):
                 isValid = True
             else:
@@ -227,12 +238,7 @@ class Bea():
         code = guess.lower()
         
         rnd1 = random.randint(0,len(self.cities)-1)
-        '''
-        rnd2 = random.randint(0,len(self.shop_type_list)-1)
-        while rnd1 == rnd2:
-            rnd2 = random.randint(0,len(self.shop_type_list)-1)
-        departure = self.cities[rnd1]
-        '''
+        
         destination = self.cities[rnd1]
         
         delays = ["15 minutes", "30 minutes", "1 hour", "2 hours", "4 hours"]
@@ -242,7 +248,6 @@ class Bea():
         
         randomtime = random. randint(8, 22)
         
-        #s = "Your flight with code " + code.replace(" ", "") + "from " + departure + " to " + destination +"is " + rndstatus
         s = "Your flight with code " + code.replace(" ", "") + " to " + destination +"is " + rndstatus
         
         if rndstatus == "delayed":
@@ -295,12 +300,18 @@ class Bea():
             self.speak("okay, I'm here for you when you want")
         elif "yes" in words:
             name = self.book_name()
-            #self.speak("okay, I'm booking a flight for you from " + str(departure) + " to " + str(destination) + " for " + str(when))
             self.speak("okay, I'm booking a flight for you to" + str(destination) + "for" + str(when) + "in name" + name)
         else:
             self.speak("I did not get it, sorry, can you please repeat?")
-            #self.flightconf(departure, destination, when)
             self.flightconf(destination, when)
+    
+    def extract_entity(self, sentence, label):
+        try:
+            ent = self.parser.entities(sentence)
+            guess = ent[label][0]
+        except: 
+            guess = None
+        return guess
     
     def flight(self, sentence):
         children = self.parser.parse(sentence)
@@ -308,58 +319,57 @@ class Bea():
         #departure = self.findcities(children, entities, 'from')
         destination = self.findcities(children, entities,'to')
         while destination is None:
-            self.speak("where do you want to go?")
+            self.speak("where do you want to go? Say stop to end the conversation")
             guess = self.hear()
-            try:
-                ent = self.parser.entities(guess["transcription"])
-                destination = ent["GPE"]
-            except:
-                destination = None
+            guess = guess["transcription"]
+            if guess is not None and (guess == "stop" or "stop" in guess):
+                self.speak("okay, I'm here for you when you want")
+                return "stop", "stop"
+            destination = self.extract_entity(guess, "GPE")
 
         if 'DATE' in entities.keys():
-            when = entities["DATE"]
+            when = entities["DATE"][0]
         else:    
             self.speak("when do you want to leave?")
             guess = self.hear()["transcription"]
-            while guess is None:
+            date = self.extract_entity(guess, "DATE")
+            while date is None:
                 self.speak("I've not understood. Please repeat")
                 guess = self.hear()
                 guess = guess["transcription"]
-                try:
-                    ent = self.parser.entities(guess)
-                    guess = ent["DATE"]
-                except: 
-                    guess = None
-            when = guess
-         
-        #return departure, destination, when
+                if guess is not None and (guess == "stop" or "stop" in guess):
+                    self.speak("okay, I'm here for you when you want")
+                    return "stop", "stop"
+                date = self.extract_entity(guess, "DATE")
+            when = date
         return destination, when
         
     def flightbooking(self, sentence):
         randomprice = random.randint(20,400)
         randomtime = random. randint(8, 22)
         randomexistence = random.randint(0,1)
-        
-        #departure, destination, when = self.flight(sentence)
         destination, when = self.flight(sentence)
+        if destination == "stop" and when == "stop":
+            return True
         while randomexistence == 0:
-            self.speak("I'm really sorry about this, but there are no flights to" + str(destination) + str(when) + "try asking me for another date")
+            self.speak("I'm really sorry about this, but there are no flights to" + str(destination) + str(when) + ", try asking me for another date or tell me stop to end the research")
             guess = self.hear()["transcription"]
-            while guess is None:
-                self.speak("I've not understood. Please repeat")
+            if guess is not None and (guess == "stop" or "stop" in guess):
+                self.speak("okay, I'm here for you when you want")
+                return True
+            date = self.extract_entity(guess, "DATE")
+            while date is None:
+                self.speak("I've not understood. Please repeat or tell me stop to end the conversation")
                 guess = self.hear()
                 guess = guess["transcription"]
-                try:
-                    ent = self.parser.entities(guess)
-                    guess = ent["DATE"]
-                except: 
-                    guess = None
-            when = guess
+                if guess is not None and (guess == "stop" or "stop" in guess):
+                    self.speak("okay, I'm here for you when you want")
+                    return True
+                date = self.extract_entity(guess, "DATE")
+            when = date
             randomexistence = random.randint(0,1)
-        #self.speak("Yes, there is a flight from " + str(departure) + " to " + str(destination) + " for " + str(when) + ". It's cost is " + str(randomprice) + "euros " +\
         self.speak("Yes, there is a flight to" + str(destination) + "for" + str(when) + ". It's cost is " + str(randomprice) + "euros " +\
         "and it leaves at" + str(randomtime) + "o'clock. Do you want me to book it for you?")
-        #self.flightconf(departure, destination, when)
         self.flightconf(destination, when)
         return True
         
@@ -369,22 +379,26 @@ class Bea():
         . Which kind of assistance do you need?")
         guess = self.hear()["transcription"]
         while guess is None:
-            self.speak("I've not understood. Please repeat")
+            self.speak("I've not understood. Please repeat or tell me stop to end the conversation")
+            if guess is not None and (guess == "stop" or "stop" in guess):
+                self.speak("okay, I'm here for you when you want")
+                return True
             guess = self.hear()
             guess = guess["transcription"]
         assistance_needed = guess
+        
         self.speak("When do you need it?")
         guess = self.hear()["transcription"]
-        while guess is None:
-            self.speak("I've not understood. Please repeat")
+        date = self.extract_entity(guess, "DATE")
+        while date is None:
+            self.speak("I've not understood. Please repeat or tell me stop to end the conversation")
+            if guess is not None and (guess == "stop" or "stop" in guess):
+                self.speak("okay, I'm here for you when you want")
+                return True
             guess = self.hear()
             guess = guess["transcription"]
-            try:
-                ent = self.parser.entities(guess)
-                guess = ent["DATE"][0]
-            except: 
-                guess = None
-        when = guess
+            date = self.extract_entity(guess, "DATE")
+        when = date
         self.speak("Perfect, one of our dependents will be available for you" + when + "for the assistance service you have chosen: "+ assistance_needed)
         return True
     
@@ -402,10 +416,14 @@ class Bea():
         guess = None
         
         while item is None:
+            guess = self.hear()["transcription"]
             while guess is None:
-                self.speak("I've not understood. Please, tell me what you want to buy.")
+                self.speak("I've not understood. Please, tell me what you want to buy or tell me stop to end the conversation")
                 guess = self.hear()
                 guess = guess["transcription"]
+                if guess is not None and (guess == "stop" or "stop" in guess):
+                    self.speak("okay, I'm here for you when you want")
+                    return True
             item = self.getItem(self.parser.noun_chunks(guess))
         
         soldhere = False 
@@ -427,53 +445,57 @@ class Bea():
         return True
     
     def rentacar(self,sentence):
-        self.speak("Yes, the followings are the models we have available: luxury car, mini van, utilitarian car. Which one are you interested in?")
+        self.speak("Yes, the followings are the models we have available: luxury car, utilitarian car. Which one are you interested in?")
         guess = self.hear()["transcription"]
         while guess is None or guess not in self.car_models:
-            self.speak("I've not understood. Please repeat")
+            self.speak("There are some problem with your request, maybe I've not understood or the model you have asked for is not available. Try again or tell me stop to end the conversation")
             guess = self.hear()
             guess = guess["transcription"]
-            if guess not in self.car_models:
-                self.speak("this model is not available, sorry, try with another one")
+            if guess is not None and (guess == "stop" or "stop" in guess):
+                self.speak("okay, I'm here for you when you want")
+                return True
         car_model = guess
         isValid = False
         self.speak("For how many days do you need it?. Please specify the exact number of days")
         guess = self.hear()["transcription"]
-        while guess is None:
-            self.speak("I've not understood. Please repeat")
+        days = self.extract_entity(guess, "DATE")
+        while days is None:
+            self.speak("I've not understood. Please repeat or tell me stop to end the conversation")
             guess = self.hear()
             guess = guess["transcription"]
-            try:
-                ent = self.parser.entities(guess)
-                guess = ent["DATE"][0]
-            except: 
-                guess = None
-        num_days = guess
-        
-        self.speak("Ok, you have rent a" + car_model + "for "+ num_days)
+            if guess is not None and (guess == "stop" or "stop" in guess):
+                self.speak("okay, I'm here for you when you want")
+                return True
+            days = self.extract_entity(guess, "DATE")
+        num_days = days
+        name = self.book_name()
+        self.speak("Ok, you have rent a" + car_model + "for "+ num_days + "in name" + name)
         return True
 
     def bookhotel(self, sentence):
         self.speak("I can suggest you a wonderful hotel near the airport. The Royal hotel. Do you want me to book a room there for you?")
         guess = self.hear()["transcription"]
         while guess is None:
-            self.speak("I've not understood. Please repeat")
+            self.speak("I've not understood. Please repeat or tell me stop to end the conversation")
             guess = self.hear()
             guess = guess["transcription"]
+            if guess is not None and (guess == "stop" or "stop" in guess):
+                self.speak("okay, I'm here for you when you want")
+                return True
         confirm = guess
         if "yes" in confirm or "Yes" in confirm:
             self.speak("For how many days do you need it?. Please specify the exact number of days")
             guess = self.hear()["transcription"]
-            while guess is None:
-                self.speak("I've not understood. Please repeat")
+            days = self.extract_entity(guess, "DATE")
+            while days is None:
+                self.speak("I've not understood. Please repeat or tell me stop to end the conversation")
                 guess = self.hear()
                 guess = guess["transcription"]
-                try:
-                    ent = self.parser.entities(guess)
-                    guess = ent["DATE"][0]
-                except: 
-                    guess = None
-            num_days = guess
+                if guess is not None and (guess == "stop" or "stop" in guess):
+                    self.speak("okay, I'm here for you when you want")
+                    return True
+                days = self.extract_entity(guess, "DATE")
+            num_days = days
             
             name = self.book_name()
             self.speak("Ok, I have booked for you a room in the Royal hotel for" + num_days + "in name" + name)
