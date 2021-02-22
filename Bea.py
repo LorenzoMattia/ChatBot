@@ -27,7 +27,7 @@ class Bea():
         self.shop_types = ["souvenir stores", "supermarket duty free", "luxury shops", "restaurants", "cafes"]
         self.shop_list = ['mediaworld', 'nike', 'adidas', 'mcdonald']
         self.shop_type_list = ['electronic', 'restaurant', 'clothes', 'cafe', 'hairdresser', 'supermarket']
-        self.cities = ["Rome", "Berlin", "Amsterdam", "Dublin", "Madrid", "Milan", "Dublin", "Helsinki", "Oslo", "New York", "Los Angeles"]
+        self.cities = ["Rome", "Berlin", "Amsterdam", "Dublin", "Milan", "Helsinki", "Oslo", "New York", "Los Angeles"]
         self.items = ["souvenir", "toy", "clothes", "magnet", "perfume", "pizza", "sandwich", "charger"]
         self.shops = [["London souvenirs", "Souvenirs from England", "U.K. souvenirs"], ["Game Stop", "Toys U.K"], \
                     ["Burberry", "Gucci", "Fendi"], ["London souvenirs", "Magnets Love", "U.K. souvenirs"], ["duty free"], ["pizza hut", "italy pizza"],\
@@ -166,6 +166,7 @@ class Bea():
         return letter + str(number)
     
     def checkflightcode(self, code):
+        code = code.replace(" ", "")
         if code is None:
             return False
         if len(code) is not 6:
@@ -185,7 +186,7 @@ class Bea():
         guess = self.hear()["transcription"]
         isValid = self.checkflightcode(guess)
         while guess is None or not isValid:
-            self.speak("I've not understood. Please repeat or tell me stop to end the conversation")
+            self.speak("This is not a valid code. Please repeat or tell me stop to end the conversation")
             guess = self.hear()
             guess = guess["transcription"]
             if guess is not None and (guess == "stop" or "stop" in guess):
@@ -193,8 +194,7 @@ class Bea():
                 return True
             if self.checkflightcode(guess):
                 isValid = True
-            else:
-                self.speak("That is not a valid code. Try again please.")
+            
         code = guess.lower()
         gatecode = self.buildgatecode()
         self.speak("The gate of your flight " + code.replace(" ", "") + "is " + gatecode)
@@ -205,7 +205,7 @@ class Bea():
         guess = self.hear()["transcription"]
         isValid = self.checkflightcode(guess)
         while guess is None or not isValid:
-            self.speak("I've not understood. Please repeat or tell me stop to end the conversation")
+            self.speak("This is not a valid code. Please repeat or tell me stop to end the conversation")
             guess = self.hear()
             guess = guess["transcription"]
             if guess is not None and (guess == "stop" or "stop" in guess):
@@ -213,8 +213,6 @@ class Bea():
                 return True
             if self.checkflightcode(guess):
                 isValid = True
-            else:
-                self.speak("That is not a valid code. Try again please.")
         code = guess.lower()
         terminalnum = random.randint(1, 10)
         self.speak("The terminal for your flight " + code.replace(" ", "") + " is the number " + str(terminalnum) +". There you can check in for the flight. Enjoy it.")
@@ -225,7 +223,7 @@ class Bea():
         guess = self.hear()["transcription"]
         isValid = self.checkflightcode(guess)
         while guess is None or not isValid:
-            self.speak("I've not understood. Please repeat or tell me stop to end the conversation")
+            self.speak("This is not a valid code. Please repeat or tell me stop to end the conversation")
             guess = self.hear()
             guess = guess["transcription"]
             if guess is not None and (guess == "stop" or "stop" in guess):
@@ -233,20 +231,21 @@ class Bea():
                 return True
             if self.checkflightcode(guess):
                 isValid = True
-            else:
-                self.speak("That is not a valid code. Try again please.")
         code = guess.lower()
         
-        rnd1 = random.randint(0,len(self.cities)-1)
-        
-        destination = self.cities[rnd1]
+        ent = self.parser.entities(sentence)
+        if 'GPE' in ent.keys():
+            destination = ent['GPE'][0]
+        else:
+            rnd1 = random.randint(0,len(self.cities)-1)
+            destination = self.cities[rnd1]
         
         delays = ["15 minutes", "30 minutes", "1 hour", "2 hours", "4 hours"]
         status = ["in time", "cancelled", "delayed"]
         rnd = random.randint(0,len(status)-1)
         rndstatus = status[rnd]
         
-        randomtime = random. randint(8, 22)
+        #randomtime = random. randint(8, 22)
         
         s = "Your flight with code " + code.replace(" ", "") + " to " + destination +"is " + rndstatus
         
@@ -255,9 +254,9 @@ class Bea():
             rnddelay = delays[rnd]
             statussentence = " of " + rnddelay + " .I'm sorry"
         elif rndstatus == "in time":
-            statussentence = " .So it will leave at " + str(randomtime) + "o'clock."
+            statussentence = " .So it will leave at the scheduled time"
         else:
-            statussentence = " I'm really sorry about this."
+            statussentence = ". I'm really sorry about this."
             
         self.speak(s+statussentence)
         return True
@@ -348,8 +347,9 @@ class Bea():
         randomprice = random.randint(20,400)
         randomtime = random. randint(8, 22)
         randomexistence = random.randint(0,1)
+        #randomexistence = 0
         destination, when = self.flight(sentence)
-        if destination == "stop" and when == "stop":
+        if str(destination) == "stop" and str(when) == "stop":
             return True
         while randomexistence == 0:
             self.speak("I'm really sorry about this, but there are no flights to" + str(destination) + str(when) + ", try asking me for another date or tell me stop to end the research")
@@ -374,8 +374,8 @@ class Bea():
         return True
         
     def disablepeople(self, sentence):
-        self.speak("Dear customer, we offer any kind of assistance for people with disabilities. \
-        The airport offers assistance for any displacement in the airport, help for flights information and for luggage displacement\
+        self.speak("Dear customer, we offer any kind of assistance for people with disabilities: \
+        support to get around into the airport, help for flights information and for luggage displacement\
         . Which kind of assistance do you need?")
         guess = self.hear()["transcription"]
         while guess is None:
@@ -399,13 +399,15 @@ class Bea():
             guess = guess["transcription"]
             date = self.extract_entity(guess, "DATE")
         when = date
-        self.speak("Perfect, one of our dependents will be available for you" + when + "for the assistance service you have chosen: "+ assistance_needed)
+        self.speak("Perfect, one of our dependents will be available for you" + when + "for the assistance service you have chosen")
         return True
     
     def getItem(self, chunks):
         item = None
         try:
             item = chunks['dobj'] if 'dobj' in chunks.keys() else None
+            if item is None:
+                self.speak("what do you want to buy?")
         except:
             return None
         return item
@@ -414,7 +416,6 @@ class Bea():
         chunks = self.parser.noun_chunks(sentence)
         item = self.getItem(chunks)
         guess = None
-        
         while item is None:
             guess = self.hear()["transcription"]
             while guess is None:
@@ -424,15 +425,15 @@ class Bea():
                 if guess is not None and (guess == "stop" or "stop" in guess):
                     self.speak("okay, I'm here for you when you want")
                     return True
-            item = self.getItem(self.parser.noun_chunks(guess))
-        
+            #item = self.getItem(self.parser.noun_chunks(guess))
+            item = guess
         soldhere = False 
         
         for string in self.items:
             if string in item or item in string:
+                item = string
                 soldhere = True
                 break
-            
         if soldhere:
             str = ""
             for i in self.items2shops[string]:

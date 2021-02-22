@@ -24,7 +24,8 @@
 	{"tag": "flightinfo",
 	"patterns": ["I would like to know what is the status of my flight", "what is the status of my flight BA2490", 
 	"Can you give me some information about my flight TO3145", "do you have any information about my flight", "status of flight", 
-	"status", "information about flight", "information", "is my flight in time", "everything ok with my flight", "news about my flight", "is my flight confirmed"]
+	"status", "information about flight", "information", "is my flight in time", "everything ok with my flight", "news about my flight", "is my flight confirmed",
+	"I have a flight for Milan and I would like to know if it is in time"]
 	},
 	{"tag": "flightgate",
 	"patterns": ["I would like to know which is the gate of my flight RY3168", "Do you know what is the gate of my flight", 
@@ -45,7 +46,7 @@
 	"i need to buy a fragrance", "i need some sugar", "where can I buy some clothes", "where can I buy a pizza","where can I buy a guitar", 
 	"where can I buy some sushi", "where can I buy a couple of magnets", "where can I find a magnet for my daugther", "are there any shops which sell perfumes",
 	"are there any shops which sell perfumes", "is there a shop that sells souvenirs", "shops selling clothes", "stores selling postcards", "i need some water", 
-	"where can i drink something", "is it possible to buy a videogame somewhere"]
+	"where can i drink something", "is it possible to buy a videogame somewhere", "i want to buy a radio", "i want to buy a smartphone", "i would like to buy a pen"]
 	},
 	{"tag": "rentacar",
 	"patterns": ["i would like to rent a car", "i want to rent a car", "can i rent a car", "is it possible to rent a car", "i need a car", "i need to rent a car", 

@@ -90,8 +90,8 @@ def createmodel(training_labels, training_sentences):
     x = Embedding(vocab_size, embedding_dim, input_length=max_len)(inp)
     out1 = Conv1D(32, 1, activation='relu', padding = "same")(x)
     out2 = Conv1D(32, 2, activation='relu', padding = "same")(x)
-    out5 = Conv1D(32, 3, activation='relu', padding = "same")(x)
-    out = concatenate([out1, out2, out5], axis = 1)
+    out3 = Conv1D(32, 3, activation='relu', padding = "same")(x)
+    out = concatenate([out1, out2, out3], axis = 1)
     x = GlobalMaxPooling1D()(out)
     x = Dense(32, activation='relu')(x)
     x = Dense(num_classes, activation='softmax')(x)
@@ -139,7 +139,7 @@ def evaluate(model, val_padded_sequences, val_labels):
     print('Test accuracy: %f' %acc)
 
 if __name__ == '__main__':
-    train = False
+    train = True
     training_sentences, training_labels, labels, val_sentences, val_labels, num_classes = loaddata()
     if not train:
         model, tokenizer, lbl_encoder = loadmodel()
