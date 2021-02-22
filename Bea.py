@@ -406,8 +406,6 @@ class Bea():
         item = None
         try:
             item = chunks['dobj'] if 'dobj' in chunks.keys() else None
-            if item is None:
-                self.speak("what do you want to buy?")
         except:
             return None
         return item
@@ -415,9 +413,10 @@ class Bea():
     def wheretobuy(self, sentence):
         chunks = self.parser.noun_chunks(sentence)
         item = self.getItem(chunks)
-        guess = None
-        while item is None:
-            guess = self.hear()["transcription"]
+        #while item is None:
+            #guess = self.hear()["transcription"]
+        if item is None:
+            guess = None
             while guess is None:
                 self.speak("I've not understood. Please, tell me what you want to buy or tell me stop to end the conversation")
                 guess = self.hear()
