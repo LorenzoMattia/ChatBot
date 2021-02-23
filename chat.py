@@ -32,24 +32,22 @@ def chat():
         if var == 'y':
             guess = assistent.hear()
             inp = guess["transcription"]
-            #try:
-            result = model.predict(keras.preprocessing.sequence.pad_sequences(tokenizer.texts_to_sequences([inp]),
-                                                 truncating='post', maxlen=max_len))
-            print(np.max(result))
-            if np.max(result) < 0.5:
-                raise notsure
-            tag = lbl_encoder.inverse_transform([np.argmax(result)])
-            
-            method = None 
-            method = getattr(assistent, tag[0])
-            print(method)
-            continueConversation = method(inp)
-            '''
+            try:
+                result = model.predict(keras.preprocessing.sequence.pad_sequences(tokenizer.texts_to_sequences([inp]),
+                                                     truncating='post', maxlen=max_len))
+                print(np.max(result))
+                if np.max(result) < 0.5:
+                    raise notsure
+                tag = lbl_encoder.inverse_transform([np.argmax(result)])
+                
+                method = None 
+                method = getattr(assistent, tag[0])
+                print(method)
+                continueConversation = method(inp)
             except notsure:
                 assistent.speak("I'm not sure of what you have asked to me. Try with a different formulation of the sentence")
             except:
                 assistent.speak("I didn't catch that. What did you say?")
-            '''
         else:
             continue
             

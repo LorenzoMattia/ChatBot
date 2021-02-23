@@ -263,8 +263,8 @@ class Bea():
     
     def findcities(self, children, entities, prep):
         city = None
-        print(children)
-        print(entities)
+        #print(children)
+        #print(entities)
         if prep in children:
             try:
                 for word in children[prep]:
@@ -459,6 +459,8 @@ class Bea():
         self.speak("For how many days do you need it?. Please specify the exact number of days")
         guess = self.hear()["transcription"]
         days = self.extract_entity(guess, "DATE")
+        if days is None:
+            days = self.extract_entity(guess, "CARDINAL")
         while days is None:
             self.speak("I've not understood. Please repeat or tell me stop to end the conversation")
             guess = self.hear()
@@ -467,7 +469,15 @@ class Bea():
                 self.speak("okay, I'm here for you when you want")
                 return True
             days = self.extract_entity(guess, "DATE")
+            if days is None:
+                days = self.extract_entity(guess, "CARDINAL")
         num_days = days
+        if not("day" in num_days or "days" in num_days):
+            if num_days == "1" or "1" in num_days:
+                num_days = num_days + " day"
+            else:
+                num_days = num_days + " days"
+                
         name = self.book_name()
         self.speak("Ok, you have rent a" + car_model + "for "+ num_days + "in name" + name)
         return True
@@ -487,6 +497,8 @@ class Bea():
             self.speak("For how many days do you need it?. Please specify the exact number of days")
             guess = self.hear()["transcription"]
             days = self.extract_entity(guess, "DATE")
+            if days is None:
+                days = self.extract_entity(guess, "CARDINAL")
             while days is None:
                 self.speak("I've not understood. Please repeat or tell me stop to end the conversation")
                 guess = self.hear()
@@ -495,8 +507,14 @@ class Bea():
                     self.speak("okay, I'm here for you when you want")
                     return True
                 days = self.extract_entity(guess, "DATE")
+                if days is None:
+                    days = self.extract_entity(guess, "CARDINAL")
             num_days = days
-            
+            if not("day" in num_days or "days" in num_days):
+                if num_days == "1" or "1" in num_days:
+                    num_days = num_days + " day"
+                else:
+                    num_days = num_days + " days"
             name = self.book_name()
             self.speak("Ok, I have booked for you a room in the Royal hotel for" + num_days + "in name" + name)
         else:

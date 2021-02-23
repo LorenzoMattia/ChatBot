@@ -74,17 +74,6 @@ def createmodel(training_labels, training_sentences):
     #text tokenization
     tokenizer = Tokenizer(num_words=vocab_size, oov_token=oov_token)
     tokenizer.fit_on_texts(training_sentences)
-    '''
-    #creating the model
-    model = Sequential()
-    model.add(Embedding(vocab_size, embedding_dim, input_length=max_len))
-    model.add(Conv1D(32, 5, activation='relu'))
-    model.add(GlobalMaxPooling1D())
-    model.add(Dense(16, activation='relu'))
-    model.add(Dense(num_classes, activation='softmax'))
-    model.compile(loss='sparse_categorical_crossentropy', 
-                  optimizer='adam', metrics=['accuracy'])
-    '''
     
     inp = Input((20))
     x = Embedding(vocab_size, embedding_dim, input_length=max_len)(inp)
