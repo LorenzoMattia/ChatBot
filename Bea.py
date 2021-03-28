@@ -9,18 +9,6 @@ from SpeechParser import Parser
 import numpy as np
 
 
-'''
-{"tag": "shoppresence",
-	"patterns": ["Can I find a supermarket in the airport", "can I find some electronic shops here", "can I find an Armani store in the airport", 
-	"is there a GameStop here", "is there an hairdresser in the airport", "is there a cafe", "Are there any restaurants", 
-	"are there any videogames stores here", "are there any clothes shops in the airport"]
-	},
-    
-	{"tag": "shoppresence",
-	"patterns": ["is it possible to find a supermarket", "can I find here a toy store", "is there any Gucci store in the airport"]
-	},
-'''
-
 class Bea():
 
     def __init__(self, recognizer, microphone, limit):
@@ -125,40 +113,6 @@ class Bea():
         choice = random.randint(0,len(answers)-1)
         self.speak(answers[choice])
         return False
-        
-    '''
-    def shoppresence(self, sentence):
-        complobj = None
-        chunks = self.parser.noun_chunks(sentence)
-        complobj = chunks['dobj'] if 'dobj' in chunks.keys() else chunks['attr']
-        while complobj is None:
-            self.speak("I've not understood. Please repeat.")
-            guess = self.hear()
-            sentence = guess["transcription"]
-            chunks = self.parser.noun_chunks(sentence)
-            complobj = chunks['dobj'] if 'dobj' in chunks.keys() else chunks['attr']
-        
-        complobj = complobj.lower()
-        here = False
-        for string in self.shop_list:
-            if complobj in string or string in complobj:
-                complobj = string
-                here = True
-        if not here:
-            for string in self.shop_type_list:
-                if complobj in string or string in complobj:
-                    complobj = string
-                    here = True
-        if here:
-            self.speak("Yes, you can find " + complobj + ' in our airport!')
-        else:
-            rnd1 = random.randint(0,len(self.shop_type_list)-1)
-            rnd2 = random.randint(0,len(self.shop_type_list)-1)
-            while rnd1 == rnd2:
-                rnd2 = random.randint(0,len(self.shop_type_list)-1)
-            self.speak("No, I'm really sorry about this. But you can find some other very interesting shops like: "+  self.shop_type_list[rnd1] + ', ' + self.shop_type_list[rnd2])
-        return True  
-    '''    
     
     def buildgatecode(self):
         letter = random.choice(string.ascii_letters)
