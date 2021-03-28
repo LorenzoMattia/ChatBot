@@ -1,6 +1,6 @@
 # ChatBot
 
-I have realized a chatbot that performs the task of helping people in a generic airport of London. It has some useful functionalities solving typical situations and problems.
+I have realized a chatbot that performs the task of helping people in a generic airport of London. It has some useful functionalities solving typical situations and problems. To use it, just download the repository and run the "chat.py" file.
 
 ## Technologies used
 The structure of the program can be divided in four main parts:
