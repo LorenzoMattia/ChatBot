@@ -2,7 +2,7 @@
 
 I have realized a chatbot that performs the task of helping people in a generic airport of London. It has some useful functionalities solving typical situations and problems.
 
-##Technologies used
+## Technologies used
 The structure of the program can be divided in four main parts:
 - A class entirely dedicated to the agent, in which I handle the recognition of my speech, the speaking of the agent and the dialogue management
   - The speech recognition is done through the use of the *SpeechRecognition* library provided by python.
@@ -14,7 +14,7 @@ The structure of the program can be divided in four main parts:
 The model, the label encoder and the tokenizer are saved thanks to the *pickle* library
 - Last, the management of the conversation turns is done in one last file.
 
-##Language understanding (LU)
+## Language understanding (LU)
 As anticipated, the understanding of the user sentences is done with a neural network.
 Its input is a JSON file in which are defined some intents, composed by a tag representing the name of the intent and a list of patterns, i.e. some possible ways of saying sentences belonging to that tag.
 
@@ -22,7 +22,7 @@ After training the network on a dataset built in this way, with a total amount o
 For each tag I have defined a method in the agent class, handling that particular situation.
 It is important to underline that the tag and the respective method to handle that situation must have the same name, in such a way it is possible to call the agent’s method starting from the tag predicted by the network, using the *getattribute* method, which takes as parameter the exact name of the attribute of the given class that we want to obtain.
 
-##Preprocessing
+## Preprocessing
 The first step has been iterating on the two JSON files containing the training set and the validation set, saving in a list the example sentences contained in the dataset and in another list the corresponding label of each sentence. 
 Simultaneously all the labels names are collected in a list without duplicates.
 Then the data has been preprocessed to adapt their format to the one requested from the network. In particular:
@@ -31,7 +31,7 @@ Then the data has been preprocessed to adapt their format to the one requested f
 Since each sentence has a different length, to obtain sequences all of the same length they have been padded to a fixed dimension.
 At this point the preprocessing of the data is complete and they are given to the network.
 
-##Network structure
+## Network structure
 As said before, the brain of the agent is realized with a small neural network.
 Below a brief explanation of the structure of the network:
 - The first layer is an Embedding layer. Practically it maps each tokenized word to a vector which describes the features of the word. Words having similar semantic meaning are mapped to similar vectors
@@ -52,7 +52,7 @@ As said before these two fundamental parts of the project are done using respect
   - Error, which has as value string explaining, if any occurred, the error.
   - Success, which is True by default and becomes False if there has been an error
   
-##Speech Parsing
+## Speech Parsing
 A fundamental step in handling the different situations has been the parsing of the sentences with the spacy library. Thanks to this library it is possible to extract important information about the sentence and the words of which it is composed to be used in the assistant answers.
 In particular I have used mainly two of the functionalities offered by the library:
 - The dependency parsing, thanks to which it is possible to obtain the dependencies between words. The parsing is done starting from building a dependency tree showing the links between words, and thanks to the library it is possible to navigate the tree in various ways.
@@ -61,7 +61,7 @@ The first feature has been very useful to extract from the sentences some partic
 - One of the functionalities of my chatbot allow the user to ask if a certain item is sold somewhere in the airport. In general, the item is the direct object of the sentence, and exploiting this feature it is possible to extract it from the sentence and use it to construct the answer.
 The second feature has been useful too, to extract name of cities or dates from the sentence. I have exploited it also to check, for example, if the answer to the “where do you want to go” question is actually a city and not something else.
 
-##Functionalities
+## Functionalities
 It is possible to interact with the agent in the following situations:
 - Greetings
 - Thanks
