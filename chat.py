@@ -2,7 +2,7 @@ import json
 import numpy as np
 from tensorflow import keras
 from sklearn.preprocessing import LabelEncoder
-from Bea import Bea
+from BeaNew import BeaNew
 import random
 import pickle
 import speech_recognition as sr
@@ -31,7 +31,7 @@ def chat():
         var = input()
         if var == 'y':
             guess = assistent.hear()
-            inp = guess["transcription"]
+            inp = guess
             try:
                 result = model.predict(keras.preprocessing.sequence.pad_sequences(tokenizer.texts_to_sequences([inp]),
                                                      truncating='post', maxlen=max_len))
@@ -59,7 +59,7 @@ if __name__ == '__main__':
     PROMPT_LIMIT = 1
     recognizer = sr.Recognizer()
     microphone = sr.Microphone()
-    assistent = Bea(recognizer, microphone, PROMPT_LIMIT)
+    assistent = BeaNew(recognizer, microphone, PROMPT_LIMIT)
     chat()
     
     
