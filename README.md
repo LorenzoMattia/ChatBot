@@ -44,7 +44,7 @@ Then, the outputs of these layers are concatenated.
 The output of the network, thanks to the *SoftMax* activation function used on the last layer, is the probability value of being the right class associated to each class.
 The final prediction of the network is the tag with the highest probability.
 
-##Text-To-Speech and Speech-To-Text
+## Text-To-Speech and Speech-To-Text
 As said before these two fundamental parts of the project are done using respectively the Google Text To Speech and the Speech Recognition libraries.
 1. In the first case I have defined a method in the agent class called “speak”, that given a certain sentence uses the gTTS library to save the speaking version of the textual sentence provided in an mp3 file. Then using built-in python library os I execute the file reproducing the audio.
 2. For the speech to text, I have used the library to access the microphone of my pc and from it capturing the audio. The function returns a dictionary with three keys:
